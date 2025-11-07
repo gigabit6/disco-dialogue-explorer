@@ -15,8 +15,8 @@
     "nodejs",
     "game-tools"
   ],
-  "author": "Your Name",
-  "license": "ISC",
+  "author": "gigabit6",
+  "license": "MIT",
   "dependencies": {
     "better-sqlite3": "^12.4.1",
     "express": "^5.1.0"
