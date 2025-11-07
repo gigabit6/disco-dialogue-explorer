@@ -1,0 +1,980 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Dialogue Explorer (Node UI)</title>
+    <style>
+        body {
+            font-family: system-ui, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        header {
+            background: #222;
+            color: #f4f4f4;
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+        main {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ccc;
+        }
+        .tab {
+            padding: 8px 16px;
+            cursor: pointer;
+            border-right: 1px solid #ddd;
+            background: #f5f5f5;
+        }
+        .tab.active {
+            background: #fff;
+            border-bottom: 2px solid #007acc;
+            font-weight: bold;
+        }
+        .tab-content {
+            flex: 1;
+            padding: 12px;
+            display: none;
+            overflow: auto;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+        input[type="text"],
+        select {
+            padding: 4px 6px;
+            font-size: 14px;
+        }
+        button {
+            padding: 4px 10px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        textarea {
+            width: 100%;
+            height: 260px;
+            font-family: monospace;
+            font-size: 13px;
+            white-space: pre;
+        }
+        ul {
+            list-style: none;
+            padding-left: 0;
+            margin: 0;
+        }
+        li {
+            padding: 4px 6px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+        li:hover {
+            background: #eef;
+        }
+        .panel {
+            border: 1px solid #ddd;
+            padding: 8px;
+            margin-bottom: 8px;
+            background: #fafafa;
+        }
+        .label {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<header>
+    Disco Explorer (Node UI)
+</header>
+<main>
+    <div class="tabs">
+        <div class="tab active" data-tab="search">Search</div>
+        <div class="tab" data-tab="browse">Browse</div>
+        <div class="tab" data-tab="dump">Dump</div>
+    </div>
+
+    <!-- Search tab -->
+    <section id="tab-search" class="tab-content active">
+        <div class="panel">
+            <div class="row">
+                <label>Search text:
+                    <input id="searchText" type="text" size="40" />
+                </label>
+                <select name="actor2" id="searchActorName"><option value="">select actor</option>
+                    <option value="You">You</option>
+                    <option value="Kim Kitsuragi">Kim Kitsuragi</option>
+                    <option value="Cuno">Cuno</option>
+                    <option value="Joyce Messier">Joyce Messier</option>
+                    <option value="Empathy">Empathy</option>
+                    <option value="Logic">Logic</option>
+                    <option value="Rhetoric">Rhetoric</option>
+                    <option value="Perception">Perception</option>
+                    <option value="Inland Empire">Inland Empire</option>
+                    <option value="Klaasje (Miss Oranje Disco Dancer)">Klaasje (Miss Oranje Disco Dancer)</option>
+                    <option value="Conceptualization">Conceptualization</option>
+                    <option value="Titus Hardie">Titus Hardie</option>
+                    <option value="The Deserter">The Deserter</option>
+                    <option value="Encyclopedia">Encyclopedia</option>
+                    <option value="Shivers">Shivers</option>
+                    <option value="Electrochemistry">Electrochemistry</option>
+                    <option value="Esprit de Corps">Esprit de Corps</option>
+                    <option value="Evrart Claire">Evrart Claire</option>
+                    <option value="Garte, the Cafeteria Manager">Garte, the Cafeteria Manager</option>
+                    <option value="Volition">Volition</option>
+                    <option value="Half Light">Half Light</option>
+                    <option value="Authority">Authority</option>
+                    <option value="Lena, the Cryptozoologist's wife">Lena, the Cryptozoologist's wife</option>
+                    <option value="Drama">Drama</option>
+                    <option value="Composure">Composure</option>
+                    <option value="Suggestion">Suggestion</option>
+                    <option value="Noid">Noid</option>
+                    <option value="Soona, the Programmer">Soona, the Programmer</option>
+                    <option value="Savoir Faire">Savoir Faire</option>
+                    <option value="Jean Vicquemare">Jean Vicquemare</option>
+                    <option value="Reaction Speed">Reaction Speed</option>
+                    <option value="Visual Calculus">Visual Calculus</option>
+                    <option value="Idiot Doom Spiral">Idiot Doom Spiral</option>
+                    <option value="Endurance">Endurance</option>
+                    <option value="Interfacing">Interfacing</option>
+                    <option value="Acele">Acele</option>
+                    <option value="Physical Instrument">Physical Instrument</option>
+                    <option value="Steban, the Student Communist">Steban, the Student Communist</option>
+                    <option value="Andre">Andre</option>
+                    <option value="Measurehead">Measurehead</option>
+                    <option value="Sunday Friend">Sunday Friend</option>
+                    <option value="Bird's Nest Roy">Bird's Nest Roy</option>
+                    <option value="Plaisance">Plaisance</option>
+                    <option value="Coalition Warship Archer">Coalition Warship Archer</option>
+                    <option value="Egg Head">Egg Head</option>
+                    <option value="Novelty Dicemaker">Novelty Dicemaker</option>
+                    <option value="Perception (Sight)">Perception (Sight)</option>
+                    <option value="Gary, the Cryptofascist">Gary, the Cryptofascist</option>
+                    <option value="René Arnoux">René Arnoux</option>
+                    <option value="Pain Threshold">Pain Threshold</option>
+                    <option value="Lilienne, the Net Picker">Lilienne, the Net Picker</option>
+                    <option value="Cunoesse">Cunoesse</option>
+                    <option value="Morell, the Cryptozoologist">Morell, the Cryptozoologist</option>
+                    <option value="Cindy the SKULL">Cindy the SKULL</option>
+                    <option value="Call Me Mañana">Call Me Mañana</option>
+                    <option value="Dolores Dei">Dolores Dei</option>
+                    <option value="Gaston Martin">Gaston Martin</option>
+                    <option value="Working Class Woman">Working Class Woman</option>
+                    <option value="Perception (Hearing)">Perception (Hearing)</option>
+                    <option value="Mega Rich Light-Bending Guy">Mega Rich Light-Bending Guy</option>
+                    <option value="Annette">Annette</option>
+                    <option value="Trant Heidelstam">Trant Heidelstam</option>
+                    <option value="Hand/Eye Coordination">Hand/Eye Coordination</option>
+                    <option value="Washerwoman">Washerwoman</option>
+                    <option value="The Hanged Man">The Hanged Man</option>
+                    <option value="Ruby, the Instigator">Ruby, the Instigator</option>
+                    <option value="Racist lorry driver">Racist lorry driver</option>
+                    <option value="Tommy Le Homme">Tommy Le Homme</option>
+                    <option value="Siileng">Siileng</option>
+                    <option value="Smoker on the Balcony">Smoker on the Balcony</option>
+                    <option value="Damaged Ledger">Damaged Ledger</option>
+                    <option value="Horrific Necktie">Horrific Necktie</option>
+                    <option value="Horseback Antenna">Horseback Antenna</option>
+                    <option value="Alain">Alain</option>
+                    <option value="Payphone">Payphone</option>
+                    <option value="Eugene">Eugene</option>
+                    <option value="Echo Maker">Echo Maker</option>
+                    <option value="Kortenaer">Kortenaer</option>
+                    <option value="Insulindian Phasmid">Insulindian Phasmid</option>
+                    <option value="Alice">Alice</option>
+                    <option value="Paledriver">Paledriver</option>
+                    <option value="Jules Pidieu">Jules Pidieu</option>
+                    <option value="Man with Sunglasses">Man with Sunglasses</option>
+                    <option value="Elizabeth">Elizabeth</option>
+                    <option value="Tiago">Tiago</option>
+                    <option value="Frittte clerk">Frittte clerk</option>
+                    <option value="Scab Leader">Scab Leader</option>
+                    <option value="Perception (Smell)">Perception (Smell)</option>
+                    <option value="Shanky">Shanky</option>
+                    <option value="Easy Leo">Easy Leo</option>
+                    <option value="Ancient Reptilian Brain">Ancient Reptilian Brain</option>
+                    <option value="Mysterious Pair of Eyes">Mysterious Pair of Eyes</option>
+                    <option value="Judit Minot">Judit Minot</option>
+                    <option value="Sylvie">Sylvie</option>
+                    <option value="The Gardener">The Gardener</option>
+                    <option value="Mainframe">Mainframe</option>
+                    <option value="Suzerainty: The Board Game">Suzerainty: The Board Game</option>
+                    <option value="Rosemary">Rosemary</option>
+                    <option value="A Brief Look at Infra-Materialism">A Brief Look at Infra-Materialism</option>
+                    <option value="Glen">Glen</option>
+                    <option value="Limbic System">Limbic System</option>
+                    <option value="East-Insulindian Repeater Station">East-Insulindian Repeater Station</option>
+                    <option value="Dick Mullen and the Mistaken Identity">Dick Mullen and the Mistaken Identity</option>
+                    <option value="Cleaning Lady">Cleaning Lady</option>
+                    <option value="Bench">Bench</option>
+                    <option value="Measurehead's Babe">Measurehead's Babe</option>
+                    <option value="Horse-Faced Woman">Horse-Faced Woman</option>
+                    <option value="Little Lily">Little Lily</option>
+                    <option value="Pissf****t">Pissf****t</option>
+                    <option value="The Pigs">The Pigs</option>
+                    <option value="Fuck the World">Fuck the World</option>
+                    <option value="DJ Mesh">DJ Mesh</option>
+                    <option value="Horseback Monument">Horseback Monument</option>
+                    <option value="Lilienne's Twin">Lilienne's Twin</option>
+                    <option value="Abandoned Lorry">Abandoned Lorry</option>
+                    <option value="Tutorial Agent">Tutorial Agent</option>
+                    <option value="La Fumée, Vol. 1 No. 4">La Fumée, Vol. 1 No. 4</option>
+                    <option value="Mirror">Mirror</option>
+                    <option value="Medicinal Purposes of the Pale">Medicinal Purposes of the Pale</option>
+                    <option value="Nix Gottlieb">Nix Gottlieb</option>
+                    <option value="Sunken Motor Carriage">Sunken Motor Carriage</option>
+                    <option value="Trash Container">Trash Container</option>
+                    <option value="Sleeping Dockworker">Sleeping Dockworker</option>
+                    <option value="Mack Torson">Mack Torson</option>
+                    <option value="Don't Call Abigail">Don't Call Abigail</option>
+                    <option value="Lilienne's Other Twin">Lilienne's Other Twin</option>
+                    <option value="The Greatest Innocence">The Greatest Innocence</option>
+                    <option value="Coupris Kineema">Coupris Kineema</option>
+                    <option value="Man on water lock">Man on water lock</option>
+                    <option value="Fat Angus">Fat Angus</option>
+                    <option value="Chester McLaine">Chester McLaine</option>
+                    <option value="Hjelmdallermann: the Man from Hjelmdall">Hjelmdallermann: the Man from Hjelmdall</option>
+                    <option value="Wirrâl">Wirrâl</option>
+                    <option value="Tricentennial Electrics">Tricentennial Electrics</option>
+                    <option value="Electronic Doorbell">Electronic Doorbell</option>
+                    <option value="Metal Grille Door">Metal Grille Door</option>
+                    <option value="Gorący Kubek">Gorący Kubek</option>
+                    <option value="Stained Glass Window">Stained Glass Window</option>
+                    <option value="Theo">Theo</option>
+                    <option value="Bed">Bed</option>
+                    <option value="Nightwatchman's Booth">Nightwatchman's Booth</option>
+                    <option value="Trap: Boathouses">Trap: Boathouses</option>
+                    <option value="Trap: Canal">Trap: Canal</option>
+                    <option value="Real Estate Agent">Real Estate Agent</option>
+                    <option value="Shelf of Paranormal Books">Shelf of Paranormal Books</option>
+                    <option value="Trap: Land's End">Trap: Land's End</option>
+                    <option value="De Paule">De Paule</option>
+                    <option value="Ice Bear Fridge">Ice Bear Fridge</option>
+                    <option value="Door, Basement Apartment">Door, Basement Apartment</option>
+                    <option value="Trap: Morell">Trap: Morell</option>
+                    <option value="Women's Rights">Women's Rights</option>
+                    <option value="Industrial Stove">Industrial Stove</option>
+                    <option value="Ruby's Journal">Ruby's Journal</option>
+                    <option value="Jamrock Public Library">Jamrock Public Library</option>
+                    <option value="Ceiling Fan">Ceiling Fan</option>
+                    <option value="Cornelius Gurdi and the Mountain Goats">Cornelius Gurdi and the Mountain Goats</option>
+                    <option value="Bloated Corpse of a Drunk">Bloated Corpse of a Drunk</option>
+                    <option value="From A to Zrieek! A Guide To a Well-Behaved Cockatoo">From A to Zrieek! A Guide To a Well-Behaved Cockatoo</option>
+                    <option value="Man from Hjelmdall and the Devil Woman">Man from Hjelmdall and the Devil Woman</option>
+                    <option value="Shelf of Crime Novels">Shelf of Crime Novels</option>
+                    <option value="Microgrid Generator">Microgrid Generator</option>
+                    <option value="Feld &quot;Insular&quot; Console">Feld "Insular" Console</option>
+                    <option value="Working Class Drunk">Working Class Drunk</option>
+                    <option value="Spinal Cord">Spinal Cord</option>
+                    <option value="Sixteen Days of Coldest April">Sixteen Days of Coldest April</option>
+                    <option value="Mail Collection Box">Mail Collection Box</option>
+                    <option value="BADGE: LTN-2JFR DU BOIS">BADGE: LTN-2JFR DU BOIS</option>
+                    <option value="HUB">HUB</option>
+                    <option value="Moneyman">Moneyman</option>
+                    <option value="Video Revachol, 24h">Video Revachol, 24h</option>
+                    <option value="Cuno's Dad">Cuno's Dad</option>
+                    <option value="Door, Room #3">Door, Room #3</option>
+                    <option value="File Cabinet">File Cabinet</option>
+                    <option value="Project Dread Board">Project Dread Board</option>
+                    <option value="Working Class Corpse">Working Class Corpse</option>
+                    <option value="Beautiful Necktie">Beautiful Necktie</option>
+                    <option value="Church Doors">Church Doors</option>
+                    <option value="Radio">Radio</option>
+                    <option value="Breaker Box">Breaker Box</option>
+                    <option value="Fractured Bullet">Fractured Bullet</option>
+                    <option value="Office Radio">Office Radio</option>
+                    <option value="Ruud Hoenkloewen">Ruud Hoenkloewen</option>
+                    <option value="Coin-Operated Viewer">Coin-Operated Viewer</option>
+                    <option value="Mattress Nest">Mattress Nest</option>
+                    <option value="Primer Book">Primer Book</option>
+                    <option value="Ice Cream Maker">Ice Cream Maker</option>
+                    <option value="A Hole in the Wall">A Hole in the Wall</option>
+                    <option value="ROO A72 Motor Skiff">ROO A72 Motor Skiff</option>
+                    <option value="Map Wall">Map Wall</option>
+                    <option value="Blue door">Blue door</option>
+                    <option value="Instigator's Tent">Instigator's Tent</option>
+                    <option value="Feld Mural">Feld Mural</option>
+                    <option value="Spring Mattress">Spring Mattress</option>
+                    <option value="Cargo Container Door">Cargo Container Door</option>
+                    <option value="Karaoke Stand">Karaoke Stand</option>
+                    <option value="Boots with Rotting Flesh">Boots with Rotting Flesh</option>
+                    <option value="Un Pays Infernal">Un Pays Infernal</option>
+                    <option value="Closed Curtains">Closed Curtains</option>
+                    <option value="Central Furnace">Central Furnace</option>
+                    <option value="Knick-knacks Stand">Knick-knacks Stand</option>
+                    <option value="Gaston's Sandwich">Gaston's Sandwich</option>
+                    <option value="Shelf of Romance Stories">Shelf of Romance Stories</option>
+                    <option value="Barred Door">Barred Door</option>
+                    <option value="Half-Finished Paperwork">Half-Finished Paperwork</option>
+                    <option value="A Note from the Fridge">A Note from the Fridge</option>
+                    <option value="Apricot Chewing Gum Wrapper">Apricot Chewing Gum Wrapper</option>
+                    <option value="White Envelope">White Envelope</option>
+                    <option value="Stock Certificate">Stock Certificate</option>
+                    <option value="Medicine Cabinet">Medicine Cabinet</option>
+                    <option value="Bathtub">Bathtub</option>
+                    <option value="Feld Ladder">Feld Ladder</option>
+                    <option value="Pale Latitude Compressor">Pale Latitude Compressor</option>
+                    <option value="The Great Doorgunner Megamix">The Great Doorgunner Megamix</option>
+                    <option value="Scab">Scab</option>
+                    <option value="Sawed-off Street Light">Sawed-off Street Light</option>
+                    <option value="Washbasin">Washbasin</option>
+                    <option value="Footprints in the Dust">Footprints in the Dust</option>
+                    <option value="Small Blast Door">Small Blast Door</option>
+                    <option value="Locked Door">Locked Door</option>
+                    <option value="&quot;Smallest Church in Saint-Saëns&quot;">"Smallest Church in Saint-Saëns"</option>
+                    <option value="Water Lock Control Panel">Water Lock Control Panel</option>
+                    <option value="Small Buoy">Small Buoy</option>
+                    <option value="Deluxe Topping Pie">Deluxe Topping Pie</option>
+                    <option value="Loose Floorboard">Loose Floorboard</option>
+                    <option value="Leopard-patterned bodysuit">Leopard-patterned bodysuit</option>
+                    <option value="Tare Drunk">Tare Drunk</option>
+                    <option value="Canal Crew">Canal Crew</option>
+                    <option value="Netpicker's Twins">Netpicker's Twins</option>
+                    <option value="Mikael Heidelstam">Mikael Heidelstam</option>
+                    <option value="Policeman Cloak">Policeman Cloak</option>
+                    <option value="Elevator">Elevator</option>
+                    <option value="Fishing Rod">Fishing Rod</option>
+                    <option value="Man from Hjelmdall Series">Man from Hjelmdall Series</option>
+                    <option value="Frequency Fireplace">Frequency Fireplace</option>
+                    <option value="Hawthorn Tree">Hawthorn Tree</option>
+                    <option value="Reading Materials">Reading Materials</option>
+                    <option value="Filthy Jacket">Filthy Jacket</option>
+                    <option value="Door, Room #2">Door, Room #2</option>
+                    <option value="Bust of Kras Mazov">Bust of Kras Mazov</option>
+                    <option value="Shelf of Biographies">Shelf of Biographies</option>
+                    <option value="Door (Unopenable)">Door (Unopenable)</option>
+                    <option value="Photo of Tattoos">Photo of Tattoos</option>
+                    <option value="Crane Control Panel">Crane Control Panel</option>
+                    <option value="Punch Clock/Payphone">Punch Clock/Payphone</option>
+                    <option value="Yellow Man Mug">Yellow Man Mug</option>
+                    <option value="Perception (Taste)">Perception (Taste)</option>
+                    <option value="Probably a Migrant">Probably a Migrant</option>
+                    <option value="Door, Room #1">Door, Room #1</option>
+                    <option value="Safety Curtains">Safety Curtains</option>
+                    <option value="Door, Apartment #20">Door, Apartment #20</option>
+                    <option value="Clear Window">Clear Window</option>
+                    <option value="Klaasje's Note">Klaasje's Note</option>
+                    <option value="ONE DAY I WILL RETURN TO YOUR SIDE">ONE DAY I WILL RETURN TO YOUR SIDE</option>
+                    <option value="Drainage Pipe">Drainage Pipe</option>
+                    <option value="Scabette">Scabette</option>
+                    <option value="Barry the Butcher">Barry the Butcher</option>
+                    <option value="DJ Flacio">DJ Flacio</option>
+                    <option value="Warded Door">Warded Door</option>
+                    <option value="FALN Sneakers on a Pedestal of Speakers">FALN Sneakers on a Pedestal of Speakers</option>
+                    <option value="Mountain of Board Games">Mountain of Board Games</option>
+                    <option value="Southwest Entrance to the Tenements">Southwest Entrance to the Tenements</option>
+                    <option value="Coffee Table">Coffee Table</option>
+                    <option value="A Folded Library Card">A Folded Library Card</option>
+                    <option value="Oranjese Passport">Oranjese Passport</option>
+                    <option value="Pile of Eternite">Pile of Eternite</option>
+                    <option value="Unemployed Person">Unemployed Person</option>
+                    <option value="Right-to-Worker">Right-to-Worker</option>
+                    <option value="Broken Window">Broken Window</option>
+                    <option value="Stone">Stone</option>
+                    <option value="Rack of Second-Hand Uniforms">Rack of Second-Hand Uniforms</option>
+                    <option value="Shelf of Boomboxes">Shelf of Boomboxes</option>
+                    <option value="Shack Door">Shack Door</option>
+                    <option value="Colonial Mug Collection">Colonial Mug Collection</option>
+                    <option value="Trash Can">Trash Can</option>
+                    <option value="Backyard Wall">Backyard Wall</option>
+                    <option value="Sandcastle">Sandcastle</option>
+                    <option value="Graad Factory of Magnets and Miracles U49">Graad Factory of Magnets and Miracles U49</option>
+                    <option value="Strikebreaker">Strikebreaker</option>
+                    <option value="Large Scab">Large Scab</option>
+                    <option value="Former Coal Miner">Former Coal Miner</option>
+                    <option value="Boy Strikebreaker">Boy Strikebreaker</option>
+                    <option value="Old Scab">Old Scab</option>
+                    <option value="Mother of a Scab">Mother of a Scab</option>
+                    <option value="Self-Educated Humanitarian">Self-Educated Humanitarian</option>
+                    <option value="Job Market Loser">Job Market Loser</option>
+                    <option value="Very Hard to Exploit Handicapped Person">Very Hard to Exploit Handicapped Person</option>
+                    <option value="Another Scab">Another Scab</option>
+                    <option value="Sad Scab">Sad Scab</option>
+                    <option value="Codex Urik">Codex Urik</option>
+                    <option value="Tourist map of Martinaise">Tourist map of Martinaise</option>
+                    <option value="Tare Machine">Tare Machine</option>
+                    <option value="Door, Apartment #28">Door, Apartment #28</option>
+                    <option value="Box of Sunglasses">Box of Sunglasses</option>
+                    <option value="Padlocked Door">Padlocked Door</option>
+                    <option value="Door, Apartment #12">Door, Apartment #12</option>
+                    <option value="Cafeteria Window">Cafeteria Window</option>
+                    <option value="Kras Mazov Portrait">Kras Mazov Portrait</option>
+                    <option value="Water Bowls">Water Bowls</option>
+                    <option value="Door">Door</option>
+                    <option value="Railing">Railing</option>
+                    <option value="The Sun">The Sun</option>
+                    <option value="A Pile of Clothes">A Pile of Clothes</option>
+                    <option value="Banger Scab">Banger Scab</option>
+                    <option value="Tent Flap">Tent Flap</option>
+                    <option value="Pile of Clothes">Pile of Clothes</option>
+                    <option value="Saint-Batiste Pharmaceutics">Saint-Batiste Pharmaceutics</option>
+                    <option value="Barbell">Barbell</option>
+                    <option value="Dried Wildflower">Dried Wildflower</option>
+                    <option value="Stereo 8 Player">Stereo 8 Player</option>
+                    <option value="Writing Desk">Writing Desk</option>
+                    <option value="A Pedestal of Speakers">A Pedestal of Speakers</option>
+                    <option value="Seagull">Seagull</option>
+                    <option value="Alphonse the Scab">Alphonse the Scab</option>
+                    <option value="Game Over">Game Over</option>
+                    <option value="Civilian">Civilian</option>
+                    <option value="Man from Hjelmdall">Man from Hjelmdall</option>
+                    <option value="Reeds">Reeds</option>
+                    <option value="Shimmering Wall of Vices">Shimmering Wall of Vices</option>
+                </select>
+                <label>Style:
+                    <select id="searchStyle">
+                        <option value="all">all words</option>
+                        <option value="any">any word</option>
+                        <option value="phrase">exact phrase</option>
+                        <option value="variable">variable / condition</option>
+                    </select>
+                </label>
+                <button id="btnSearch">Search</button>
+            </div>
+            <div class="row">
+                <span class="label">Selected line:</span>
+                <span id="selectedLineText">(none)</span>
+            </div>
+            <div class="row">
+                <span class="label">Results:</span>
+                <span id="resultsCount"></span>
+            </div>
+            <div style="display:flex; gap:8px; height: 260px;">
+                <div style="flex:1; overflow:auto; border:1px solid #ddd;">
+                    <ul id="resultsList"></ul>
+                </div>
+                <div style="flex:1; border:1px solid #ddd;">
+                    <textarea id="currentLinePreview" readonly></textarea>
+                    <button id="btnGoToBrowse" disabled>Open in Browse tab</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Browse tab -->
+    <section id="tab-browse" class="tab-content">
+        <div class="panel">
+            <div class="row">
+                <span class="label">Conversation info:</span>
+                <span id="browseConversationInfo"></span>
+            </div>
+        </div>
+        <div class="panel">
+            <div class="label">Conversation:</div>
+            <textarea id="browseConvo" readonly></textarea>
+        </div>
+        <div class="panel">
+            <div class="row">
+                <div style="flex:1;">
+                    <div class="label">Backwards options (parents):</div>
+                    <ul id="backOptions"></ul>
+                </div>
+                <div style="flex:1;">
+                    <div class="label">Forward options (children):</div>
+                    <ul id="forwardOptions"></ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dump tab -->
+    <section id="tab-dump" class="tab-content">
+        <div class="panel">
+            <div class="row">
+                <button id="btnDumpConvo">Dump current conversation</button>
+                <label>Dump by actor name:
+<!--                    <input id="dumpActorName" type="text" size="20" />-->
+                    <select name="actor2" id="dumpActorName"><option value="">select actor</option>
+                        <option value="You">You</option>
+                        <option value="Kim Kitsuragi">Kim Kitsuragi</option>
+                        <option value="Cuno">Cuno</option>
+                        <option value="Joyce Messier">Joyce Messier</option>
+                        <option value="Empathy">Empathy</option>
+                        <option value="Logic">Logic</option>
+                        <option value="Rhetoric">Rhetoric</option>
+                        <option value="Perception">Perception</option>
+                        <option value="Inland Empire">Inland Empire</option>
+                        <option value="Klaasje (Miss Oranje Disco Dancer)">Klaasje (Miss Oranje Disco Dancer)</option>
+                        <option value="Conceptualization">Conceptualization</option>
+                        <option value="Titus Hardie">Titus Hardie</option>
+                        <option value="The Deserter">The Deserter</option>
+                        <option value="Encyclopedia">Encyclopedia</option>
+                        <option value="Shivers">Shivers</option>
+                        <option value="Electrochemistry">Electrochemistry</option>
+                        <option value="Esprit de Corps">Esprit de Corps</option>
+                        <option value="Evrart Claire">Evrart Claire</option>
+                        <option value="Garte, the Cafeteria Manager">Garte, the Cafeteria Manager</option>
+                        <option value="Volition">Volition</option>
+                        <option value="Half Light">Half Light</option>
+                        <option value="Authority">Authority</option>
+                        <option value="Lena, the Cryptozoologist's wife">Lena, the Cryptozoologist's wife</option>
+                        <option value="Drama">Drama</option>
+                        <option value="Composure">Composure</option>
+                        <option value="Suggestion">Suggestion</option>
+                        <option value="Noid">Noid</option>
+                        <option value="Soona, the Programmer">Soona, the Programmer</option>
+                        <option value="Savoir Faire">Savoir Faire</option>
+                        <option value="Jean Vicquemare">Jean Vicquemare</option>
+                        <option value="Reaction Speed">Reaction Speed</option>
+                        <option value="Visual Calculus">Visual Calculus</option>
+                        <option value="Idiot Doom Spiral">Idiot Doom Spiral</option>
+                        <option value="Endurance">Endurance</option>
+                        <option value="Interfacing">Interfacing</option>
+                        <option value="Acele">Acele</option>
+                        <option value="Physical Instrument">Physical Instrument</option>
+                        <option value="Steban, the Student Communist">Steban, the Student Communist</option>
+                        <option value="Andre">Andre</option>
+                        <option value="Measurehead">Measurehead</option>
+                        <option value="Sunday Friend">Sunday Friend</option>
+                        <option value="Bird's Nest Roy">Bird's Nest Roy</option>
+                        <option value="Plaisance">Plaisance</option>
+                        <option value="Coalition Warship Archer">Coalition Warship Archer</option>
+                        <option value="Egg Head">Egg Head</option>
+                        <option value="Novelty Dicemaker">Novelty Dicemaker</option>
+                        <option value="Perception (Sight)">Perception (Sight)</option>
+                        <option value="Gary, the Cryptofascist">Gary, the Cryptofascist</option>
+                        <option value="René Arnoux">René Arnoux</option>
+                        <option value="Pain Threshold">Pain Threshold</option>
+                        <option value="Lilienne, the Net Picker">Lilienne, the Net Picker</option>
+                        <option value="Cunoesse">Cunoesse</option>
+                        <option value="Morell, the Cryptozoologist">Morell, the Cryptozoologist</option>
+                        <option value="Cindy the SKULL">Cindy the SKULL</option>
+                        <option value="Call Me Mañana">Call Me Mañana</option>
+                        <option value="Dolores Dei">Dolores Dei</option>
+                        <option value="Gaston Martin">Gaston Martin</option>
+                        <option value="Working Class Woman">Working Class Woman</option>
+                        <option value="Perception (Hearing)">Perception (Hearing)</option>
+                        <option value="Mega Rich Light-Bending Guy">Mega Rich Light-Bending Guy</option>
+                        <option value="Annette">Annette</option>
+                        <option value="Trant Heidelstam">Trant Heidelstam</option>
+                        <option value="Hand/Eye Coordination">Hand/Eye Coordination</option>
+                        <option value="Washerwoman">Washerwoman</option>
+                        <option value="The Hanged Man">The Hanged Man</option>
+                        <option value="Ruby, the Instigator">Ruby, the Instigator</option>
+                        <option value="Racist lorry driver">Racist lorry driver</option>
+                        <option value="Tommy Le Homme">Tommy Le Homme</option>
+                        <option value="Siileng">Siileng</option>
+                        <option value="Smoker on the Balcony">Smoker on the Balcony</option>
+                        <option value="Damaged Ledger">Damaged Ledger</option>
+                        <option value="Horrific Necktie">Horrific Necktie</option>
+                        <option value="Horseback Antenna">Horseback Antenna</option>
+                        <option value="Alain">Alain</option>
+                        <option value="Payphone">Payphone</option>
+                        <option value="Eugene">Eugene</option>
+                        <option value="Echo Maker">Echo Maker</option>
+                        <option value="Kortenaer">Kortenaer</option>
+                        <option value="Insulindian Phasmid">Insulindian Phasmid</option>
+                        <option value="Alice">Alice</option>
+                        <option value="Paledriver">Paledriver</option>
+                        <option value="Jules Pidieu">Jules Pidieu</option>
+                        <option value="Man with Sunglasses">Man with Sunglasses</option>
+                        <option value="Elizabeth">Elizabeth</option>
+                        <option value="Tiago">Tiago</option>
+                        <option value="Frittte clerk">Frittte clerk</option>
+                        <option value="Scab Leader">Scab Leader</option>
+                        <option value="Perception (Smell)">Perception (Smell)</option>
+                        <option value="Shanky">Shanky</option>
+                        <option value="Easy Leo">Easy Leo</option>
+                        <option value="Ancient Reptilian Brain">Ancient Reptilian Brain</option>
+                        <option value="Mysterious Pair of Eyes">Mysterious Pair of Eyes</option>
+                        <option value="Judit Minot">Judit Minot</option>
+                        <option value="Sylvie">Sylvie</option>
+                        <option value="The Gardener">The Gardener</option>
+                        <option value="Mainframe">Mainframe</option>
+                        <option value="Suzerainty: The Board Game">Suzerainty: The Board Game</option>
+                        <option value="Rosemary">Rosemary</option>
+                        <option value="A Brief Look at Infra-Materialism">A Brief Look at Infra-Materialism</option>
+                        <option value="Glen">Glen</option>
+                        <option value="Limbic System">Limbic System</option>
+                        <option value="East-Insulindian Repeater Station">East-Insulindian Repeater Station</option>
+                        <option value="Dick Mullen and the Mistaken Identity">Dick Mullen and the Mistaken Identity</option>
+                        <option value="Cleaning Lady">Cleaning Lady</option>
+                        <option value="Bench">Bench</option>
+                        <option value="Measurehead's Babe">Measurehead's Babe</option>
+                        <option value="Horse-Faced Woman">Horse-Faced Woman</option>
+                        <option value="Little Lily">Little Lily</option>
+                        <option value="Pissf****t">Pissf****t</option>
+                        <option value="The Pigs">The Pigs</option>
+                        <option value="Fuck the World">Fuck the World</option>
+                        <option value="DJ Mesh">DJ Mesh</option>
+                        <option value="Horseback Monument">Horseback Monument</option>
+                        <option value="Lilienne's Twin">Lilienne's Twin</option>
+                        <option value="Abandoned Lorry">Abandoned Lorry</option>
+                        <option value="Tutorial Agent">Tutorial Agent</option>
+                        <option value="La Fumée, Vol. 1 No. 4">La Fumée, Vol. 1 No. 4</option>
+                        <option value="Mirror">Mirror</option>
+                        <option value="Medicinal Purposes of the Pale">Medicinal Purposes of the Pale</option>
+                        <option value="Nix Gottlieb">Nix Gottlieb</option>
+                        <option value="Sunken Motor Carriage">Sunken Motor Carriage</option>
+                        <option value="Trash Container">Trash Container</option>
+                        <option value="Sleeping Dockworker">Sleeping Dockworker</option>
+                        <option value="Mack Torson">Mack Torson</option>
+                        <option value="Don't Call Abigail">Don't Call Abigail</option>
+                        <option value="Lilienne's Other Twin">Lilienne's Other Twin</option>
+                        <option value="The Greatest Innocence">The Greatest Innocence</option>
+                        <option value="Coupris Kineema">Coupris Kineema</option>
+                        <option value="Man on water lock">Man on water lock</option>
+                        <option value="Fat Angus">Fat Angus</option>
+                        <option value="Chester McLaine">Chester McLaine</option>
+                        <option value="Hjelmdallermann: the Man from Hjelmdall">Hjelmdallermann: the Man from Hjelmdall</option>
+                        <option value="Wirrâl">Wirrâl</option>
+                        <option value="Tricentennial Electrics">Tricentennial Electrics</option>
+                        <option value="Electronic Doorbell">Electronic Doorbell</option>
+                        <option value="Metal Grille Door">Metal Grille Door</option>
+                        <option value="Gorący Kubek">Gorący Kubek</option>
+                        <option value="Stained Glass Window">Stained Glass Window</option>
+                        <option value="Theo">Theo</option>
+                        <option value="Bed">Bed</option>
+                        <option value="Nightwatchman's Booth">Nightwatchman's Booth</option>
+                        <option value="Trap: Boathouses">Trap: Boathouses</option>
+                        <option value="Trap: Canal">Trap: Canal</option>
+                        <option value="Real Estate Agent">Real Estate Agent</option>
+                        <option value="Shelf of Paranormal Books">Shelf of Paranormal Books</option>
+                        <option value="Trap: Land's End">Trap: Land's End</option>
+                        <option value="De Paule">De Paule</option>
+                        <option value="Ice Bear Fridge">Ice Bear Fridge</option>
+                        <option value="Door, Basement Apartment">Door, Basement Apartment</option>
+                        <option value="Trap: Morell">Trap: Morell</option>
+                        <option value="Women's Rights">Women's Rights</option>
+                        <option value="Industrial Stove">Industrial Stove</option>
+                        <option value="Ruby's Journal">Ruby's Journal</option>
+                        <option value="Jamrock Public Library">Jamrock Public Library</option>
+                        <option value="Ceiling Fan">Ceiling Fan</option>
+                        <option value="Cornelius Gurdi and the Mountain Goats">Cornelius Gurdi and the Mountain Goats</option>
+                        <option value="Bloated Corpse of a Drunk">Bloated Corpse of a Drunk</option>
+                        <option value="From A to Zrieek! A Guide To a Well-Behaved Cockatoo">From A to Zrieek! A Guide To a Well-Behaved Cockatoo</option>
+                        <option value="Man from Hjelmdall and the Devil Woman">Man from Hjelmdall and the Devil Woman</option>
+                        <option value="Shelf of Crime Novels">Shelf of Crime Novels</option>
+                        <option value="Microgrid Generator">Microgrid Generator</option>
+                        <option value="Feld &quot;Insular&quot; Console">Feld "Insular" Console</option>
+                        <option value="Working Class Drunk">Working Class Drunk</option>
+                        <option value="Spinal Cord">Spinal Cord</option>
+                        <option value="Sixteen Days of Coldest April">Sixteen Days of Coldest April</option>
+                        <option value="Mail Collection Box">Mail Collection Box</option>
+                        <option value="BADGE: LTN-2JFR DU BOIS">BADGE: LTN-2JFR DU BOIS</option>
+                        <option value="HUB">HUB</option>
+                        <option value="Moneyman">Moneyman</option>
+                        <option value="Video Revachol, 24h">Video Revachol, 24h</option>
+                        <option value="Cuno's Dad">Cuno's Dad</option>
+                        <option value="Door, Room #3">Door, Room #3</option>
+                        <option value="File Cabinet">File Cabinet</option>
+                        <option value="Project Dread Board">Project Dread Board</option>
+                        <option value="Working Class Corpse">Working Class Corpse</option>
+                        <option value="Beautiful Necktie">Beautiful Necktie</option>
+                        <option value="Church Doors">Church Doors</option>
+                        <option value="Radio">Radio</option>
+                        <option value="Breaker Box">Breaker Box</option>
+                        <option value="Fractured Bullet">Fractured Bullet</option>
+                        <option value="Office Radio">Office Radio</option>
+                        <option value="Ruud Hoenkloewen">Ruud Hoenkloewen</option>
+                        <option value="Coin-Operated Viewer">Coin-Operated Viewer</option>
+                        <option value="Mattress Nest">Mattress Nest</option>
+                        <option value="Primer Book">Primer Book</option>
+                        <option value="Ice Cream Maker">Ice Cream Maker</option>
+                        <option value="A Hole in the Wall">A Hole in the Wall</option>
+                        <option value="ROO A72 Motor Skiff">ROO A72 Motor Skiff</option>
+                        <option value="Map Wall">Map Wall</option>
+                        <option value="Blue door">Blue door</option>
+                        <option value="Instigator's Tent">Instigator's Tent</option>
+                        <option value="Feld Mural">Feld Mural</option>
+                        <option value="Spring Mattress">Spring Mattress</option>
+                        <option value="Cargo Container Door">Cargo Container Door</option>
+                        <option value="Karaoke Stand">Karaoke Stand</option>
+                        <option value="Boots with Rotting Flesh">Boots with Rotting Flesh</option>
+                        <option value="Un Pays Infernal">Un Pays Infernal</option>
+                        <option value="Closed Curtains">Closed Curtains</option>
+                        <option value="Central Furnace">Central Furnace</option>
+                        <option value="Knick-knacks Stand">Knick-knacks Stand</option>
+                        <option value="Gaston's Sandwich">Gaston's Sandwich</option>
+                        <option value="Shelf of Romance Stories">Shelf of Romance Stories</option>
+                        <option value="Barred Door">Barred Door</option>
+                        <option value="Half-Finished Paperwork">Half-Finished Paperwork</option>
+                        <option value="A Note from the Fridge">A Note from the Fridge</option>
+                        <option value="Apricot Chewing Gum Wrapper">Apricot Chewing Gum Wrapper</option>
+                        <option value="White Envelope">White Envelope</option>
+                        <option value="Stock Certificate">Stock Certificate</option>
+                        <option value="Medicine Cabinet">Medicine Cabinet</option>
+                        <option value="Bathtub">Bathtub</option>
+                        <option value="Feld Ladder">Feld Ladder</option>
+                        <option value="Pale Latitude Compressor">Pale Latitude Compressor</option>
+                        <option value="The Great Doorgunner Megamix">The Great Doorgunner Megamix</option>
+                        <option value="Scab">Scab</option>
+                        <option value="Sawed-off Street Light">Sawed-off Street Light</option>
+                        <option value="Washbasin">Washbasin</option>
+                        <option value="Footprints in the Dust">Footprints in the Dust</option>
+                        <option value="Small Blast Door">Small Blast Door</option>
+                        <option value="Locked Door">Locked Door</option>
+                        <option value="&quot;Smallest Church in Saint-Saëns&quot;">"Smallest Church in Saint-Saëns"</option>
+                        <option value="Water Lock Control Panel">Water Lock Control Panel</option>
+                        <option value="Small Buoy">Small Buoy</option>
+                        <option value="Deluxe Topping Pie">Deluxe Topping Pie</option>
+                        <option value="Loose Floorboard">Loose Floorboard</option>
+                        <option value="Leopard-patterned bodysuit">Leopard-patterned bodysuit</option>
+                        <option value="Tare Drunk">Tare Drunk</option>
+                        <option value="Canal Crew">Canal Crew</option>
+                        <option value="Netpicker's Twins">Netpicker's Twins</option>
+                        <option value="Mikael Heidelstam">Mikael Heidelstam</option>
+                        <option value="Policeman Cloak">Policeman Cloak</option>
+                        <option value="Elevator">Elevator</option>
+                        <option value="Fishing Rod">Fishing Rod</option>
+                        <option value="Man from Hjelmdall Series">Man from Hjelmdall Series</option>
+                        <option value="Frequency Fireplace">Frequency Fireplace</option>
+                        <option value="Hawthorn Tree">Hawthorn Tree</option>
+                        <option value="Reading Materials">Reading Materials</option>
+                        <option value="Filthy Jacket">Filthy Jacket</option>
+                        <option value="Door, Room #2">Door, Room #2</option>
+                        <option value="Bust of Kras Mazov">Bust of Kras Mazov</option>
+                        <option value="Shelf of Biographies">Shelf of Biographies</option>
+                        <option value="Door (Unopenable)">Door (Unopenable)</option>
+                        <option value="Photo of Tattoos">Photo of Tattoos</option>
+                        <option value="Crane Control Panel">Crane Control Panel</option>
+                        <option value="Punch Clock/Payphone">Punch Clock/Payphone</option>
+                        <option value="Yellow Man Mug">Yellow Man Mug</option>
+                        <option value="Perception (Taste)">Perception (Taste)</option>
+                        <option value="Probably a Migrant">Probably a Migrant</option>
+                        <option value="Door, Room #1">Door, Room #1</option>
+                        <option value="Safety Curtains">Safety Curtains</option>
+                        <option value="Door, Apartment #20">Door, Apartment #20</option>
+                        <option value="Clear Window">Clear Window</option>
+                        <option value="Klaasje's Note">Klaasje's Note</option>
+                        <option value="ONE DAY I WILL RETURN TO YOUR SIDE">ONE DAY I WILL RETURN TO YOUR SIDE</option>
+                        <option value="Drainage Pipe">Drainage Pipe</option>
+                        <option value="Scabette">Scabette</option>
+                        <option value="Barry the Butcher">Barry the Butcher</option>
+                        <option value="DJ Flacio">DJ Flacio</option>
+                        <option value="Warded Door">Warded Door</option>
+                        <option value="FALN Sneakers on a Pedestal of Speakers">FALN Sneakers on a Pedestal of Speakers</option>
+                        <option value="Mountain of Board Games">Mountain of Board Games</option>
+                        <option value="Southwest Entrance to the Tenements">Southwest Entrance to the Tenements</option>
+                        <option value="Coffee Table">Coffee Table</option>
+                        <option value="A Folded Library Card">A Folded Library Card</option>
+                        <option value="Oranjese Passport">Oranjese Passport</option>
+                        <option value="Pile of Eternite">Pile of Eternite</option>
+                        <option value="Unemployed Person">Unemployed Person</option>
+                        <option value="Right-to-Worker">Right-to-Worker</option>
+                        <option value="Broken Window">Broken Window</option>
+                        <option value="Stone">Stone</option>
+                        <option value="Rack of Second-Hand Uniforms">Rack of Second-Hand Uniforms</option>
+                        <option value="Shelf of Boomboxes">Shelf of Boomboxes</option>
+                        <option value="Shack Door">Shack Door</option>
+                        <option value="Colonial Mug Collection">Colonial Mug Collection</option>
+                        <option value="Trash Can">Trash Can</option>
+                        <option value="Backyard Wall">Backyard Wall</option>
+                        <option value="Sandcastle">Sandcastle</option>
+                        <option value="Graad Factory of Magnets and Miracles U49">Graad Factory of Magnets and Miracles U49</option>
+                        <option value="Strikebreaker">Strikebreaker</option>
+                        <option value="Large Scab">Large Scab</option>
+                        <option value="Former Coal Miner">Former Coal Miner</option>
+                        <option value="Boy Strikebreaker">Boy Strikebreaker</option>
+                        <option value="Old Scab">Old Scab</option>
+                        <option value="Mother of a Scab">Mother of a Scab</option>
+                        <option value="Self-Educated Humanitarian">Self-Educated Humanitarian</option>
+                        <option value="Job Market Loser">Job Market Loser</option>
+                        <option value="Very Hard to Exploit Handicapped Person">Very Hard to Exploit Handicapped Person</option>
+                        <option value="Another Scab">Another Scab</option>
+                        <option value="Sad Scab">Sad Scab</option>
+                        <option value="Codex Urik">Codex Urik</option>
+                        <option value="Tourist map of Martinaise">Tourist map of Martinaise</option>
+                        <option value="Tare Machine">Tare Machine</option>
+                        <option value="Door, Apartment #28">Door, Apartment #28</option>
+                        <option value="Box of Sunglasses">Box of Sunglasses</option>
+                        <option value="Padlocked Door">Padlocked Door</option>
+                        <option value="Door, Apartment #12">Door, Apartment #12</option>
+                        <option value="Cafeteria Window">Cafeteria Window</option>
+                        <option value="Kras Mazov Portrait">Kras Mazov Portrait</option>
+                        <option value="Water Bowls">Water Bowls</option>
+                        <option value="Door">Door</option>
+                        <option value="Railing">Railing</option>
+                        <option value="The Sun">The Sun</option>
+                        <option value="A Pile of Clothes">A Pile of Clothes</option>
+                        <option value="Banger Scab">Banger Scab</option>
+                        <option value="Tent Flap">Tent Flap</option>
+                        <option value="Pile of Clothes">Pile of Clothes</option>
+                        <option value="Saint-Batiste Pharmaceutics">Saint-Batiste Pharmaceutics</option>
+                        <option value="Barbell">Barbell</option>
+                        <option value="Dried Wildflower">Dried Wildflower</option>
+                        <option value="Stereo 8 Player">Stereo 8 Player</option>
+                        <option value="Writing Desk">Writing Desk</option>
+                        <option value="A Pedestal of Speakers">A Pedestal of Speakers</option>
+                        <option value="Seagull">Seagull</option>
+                        <option value="Alphonse the Scab">Alphonse the Scab</option>
+                        <option value="Game Over">Game Over</option>
+                        <option value="Civilian">Civilian</option>
+                        <option value="Man from Hjelmdall">Man from Hjelmdall</option>
+                        <option value="Reeds">Reeds</option>
+                        <option value="Shimmering Wall of Vices">Shimmering Wall of Vices</option>
+                    </select>
+                </label>
+                <button id="btnDumpActor">Dump actor</button>
+            </div>
+            <div class="row">
+                <span class="label">Conversation info:</span>
+                <span id="dumpConversationInfo"></span>
+            </div>
+        </div>
+        <div class="panel">
+            <textarea id="dumpText" readonly></textarea>
+        </div>
+    </section>
+</main>
+
+<script>
+    // Tab switching
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            tab.classList.add('active');
+            document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+        });
+    });
+
+    async function postJSON(url, body) {
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body || {})
+        });
+        if (!res.ok) throw new Error(await res.text());
+        return res.json();
+    }
+
+    // --- Search ---
+    const searchText = document.getElementById('searchText');
+    const searchActorName = document.getElementById('searchActorName');
+    const searchStyle = document.getElementById('searchStyle');
+    const btnSearch = document.getElementById('btnSearch');
+    const resultsList = document.getElementById('resultsList');
+    const resultsCount = document.getElementById('resultsCount');
+    const selectedLineText = document.getElementById('selectedLineText');
+    const currentLinePreview = document.getElementById('currentLinePreview');
+    const btnGoToBrowse = document.getElementById('btnGoToBrowse');
+
+    let lastSearchResults = [];
+
+    btnSearch.addEventListener('click', async () => {
+        resultsList.innerHTML = '';
+        resultsCount.textContent = 'Searching...';
+        selectedLineText.textContent = '(none)';
+        currentLinePreview.value = '';
+        btnGoToBrowse.disabled = true;
+
+        try {
+            const data = await postJSON('/api/search', {
+                query: searchText.value,
+                actorName: searchActorName.value,
+                style: searchStyle.value
+            });
+            lastSearchResults = data.results || [];
+            resultsCount.textContent = `${lastSearchResults.length} result(s)`;
+            lastSearchResults.forEach((text, idx) => {
+                const li = document.createElement('li');
+                li.textContent = `${idx}: ${text}`;
+                li.dataset.index = idx;
+                resultsList.appendChild(li);
+            });
+        } catch (e) {
+            resultsCount.textContent = 'Error: ' + e.message;
+        }
+    });
+
+    resultsList.addEventListener('click', async (ev) => {
+        const li = ev.target.closest('li');
+        if (!li) return;
+        const index = parseInt(li.dataset.index, 10);
+        try {
+            const data = await postJSON('/api/select-search', { index });
+            selectedLineText.textContent = data.selectedLine || '(none)';
+            currentLinePreview.value = data.convoText || '';
+            btnGoToBrowse.disabled = false;
+            // Also prime browse tab content
+            updateBrowseUI(data);
+        } catch (e) {
+            selectedLineText.textContent = 'Error: ' + e.message;
+        }
+    });
+
+    btnGoToBrowse.addEventListener('click', () => {
+        document.querySelector('.tab[data-tab="browse"]').click();
+    });
+
+    // --- Browse ---
+    const browseConvo = document.getElementById('browseConvo');
+    const browseConversationInfo = document.getElementById('browseConversationInfo');
+    const backOptions = document.getElementById('backOptions');
+    const forwardOptions = document.getElementById('forwardOptions');
+
+    function updateBrowseUI(data) {
+        browseConvo.value = data.convoText || '';
+        browseConversationInfo.textContent = data.conversationInfo || '';
+        backOptions.innerHTML = '';
+        forwardOptions.innerHTML = '';
+
+        (data.backwardOptions || []).forEach((opt, idx) => {
+            const li = document.createElement('li');
+            li.textContent = opt;
+            li.dataset.index = idx;
+            li.addEventListener('click', () => trace('backward', idx));
+            backOptions.appendChild(li);
+        });
+
+        (data.forwardOptions || []).forEach((opt, idx) => {
+            const li = document.createElement('li');
+            li.textContent = opt;
+            li.dataset.index = idx;
+            li.addEventListener('click', () => trace('forward', idx));
+            forwardOptions.appendChild(li);
+        });
+    }
+
+    async function trace(direction, index) {
+        try {
+            const data = await postJSON('/api/trace', { direction, index });
+            updateBrowseUI(data);
+        } catch (e) {
+            alert('Trace error: ' + e.message);
+        }
+    }
+
+    // --- Dump ---
+    const btnDumpConvo = document.getElementById('btnDumpConvo');
+    const btnDumpActor = document.getElementById('btnDumpActor');
+    const dumpActorName = document.getElementById('dumpActorName');
+    const dumpText = document.getElementById('dumpText');
+    const dumpConversationInfo = document.getElementById('dumpConversationInfo');
+
+    btnDumpConvo.addEventListener('click', async () => {
+        try {
+            const data = await postJSON('/api/dump-convo');
+            dumpText.value = data.text || '';
+            dumpConversationInfo.textContent = data.conversationInfo || '';
+        } catch (e) {
+            dumpText.value = 'Error: ' + e.message;
+        }
+    });
+
+    btnDumpActor.addEventListener('click', async () => {
+        try {
+            const data = await postJSON('/api/dump-actor', {
+                actorName: dumpActorName.value
+            });
+            dumpText.value = data.text || '';
+            dumpConversationInfo.textContent = '';
+        } catch (e) {
+            dumpText.value = 'Error: ' + e.message;
+        }
+    });
+</script>
+</body>
+</html>
