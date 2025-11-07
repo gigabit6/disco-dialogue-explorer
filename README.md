@@ -1,6 +1,6 @@
-# 🗣️ Disco Dialogue Explorer (Node + SQLite)
+# 🪩 Disco Dialogue Explorer (Node + SQLite)
 
-A complete re-implementation of the classic Ruby/Tk dialogue explorer in **Node.js**.  
+A complete re-implementation of the Fayde Ruby/Tk dialogue explorer in **Node.js**.  
 It allows you to explore and search dialogue stored in a SQLite database
 
 ---
