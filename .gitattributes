@@ -1,17 +1,6 @@
-# Handle line endings automatically
-* text=auto
+# Normalize all text files to LF in repo
+* text=auto eol=lf
 
-# Optionally enforce LF endings for specific file types
-*.sh text eol=lf
-*.py text eol=lf
-*.js text eol=lf
-*.ts text eol=lf
-*.html text eol=lf
-*.css text eol=lf
-*.json text eol=lf
-*.yml text eol=lf
-*.yaml text eol=lf
-
-# Enforce CRLF for Windows-specific files
+# Force CRLF only where absolutely necessary (Windows scripts)
 *.bat text eol=crlf
-*.cmd text eol=crlf
+*.cmd text eol=crlfgit rm --cached -r .
