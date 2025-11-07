@@ -8,21 +8,33 @@ const app = express();
 
 // Resolve actor input (either id or name) to an actor id from the DB
 function resolveActorId(actorInput) {
-    if (!actorInput || String(actorInput).trim().length === 0) return 0;
+    const input = String(actorInput || '').trim().toLowerCase();
+    if (!input) return 0;
 
-    // If it's numeric, just use it
-    const asNumber = parseInt(actorInput, 10);
+    // If it's numeric, just use it as an ID
+    const asNumber = parseInt(input, 10);
     if (!Number.isNaN(asNumber)) return asNumber;
 
-    // Otherwise treat it as a name (case-insensitive, substring match)
-    const name = String(actorInput).toLowerCase();
-    const row = db
-        .prepare(
-            "SELECT id FROM actors WHERE LOWER(name) LIKE ? ORDER BY id LIMIT 1"
-        )
-        .get(`%${name}%`);
+    // 1) Exact match
+    let row = db.prepare(
+        "SELECT id FROM actors WHERE LOWER(name) = ? ORDER BY id LIMIT 1"
+    ).get(input);
+    if (row) return row.id;
 
-    return row ? row.id : 0; // 0 means "no limit"
+    // 2) Starts with (prefix match)
+    row = db.prepare(
+        "SELECT id FROM actors WHERE LOWER(name) LIKE ? ORDER BY id LIMIT 1"
+    ).get(input + '%');
+    if (row) return row.id;
+
+    // 3) Anywhere in the name (substring)
+    row = db.prepare(
+        "SELECT id FROM actors WHERE LOWER(name) LIKE ? ORDER BY id LIMIT 1"
+    ).get('%' + input + '%');
+    if (row) return row.id;
+
+    // 0 = no limit
+    return 0;
 }
 
 app.use(express.json());
