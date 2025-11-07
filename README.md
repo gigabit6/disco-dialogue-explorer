@@ -20,13 +20,12 @@ It allows you to explore and search a game’s dialogue stored in a SQLite datab
 
 Before running the project, make sure you have:
 
-1. **Node.js 18+**  
+1. **Node.js 20.x, 22.x, 23.x, or 24.x**  
    👉 [https://nodejs.org/](https://nodejs.org/)  
    Check installation:
    ```bash
    node -v
    npm -v
-   ```
 
 2. **Git**  
    👉 [https://git-scm.com/](https://git-scm.com/)  

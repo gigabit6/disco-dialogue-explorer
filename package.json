@@ -1,17 +1,27 @@
 {
-  "name": "dealogue-db-tfc-21-03-30",
+  "name": "dialogue-db-tfc-21-03-30",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "A web-based dialogue explorer for SQLite game databases, rebuilt in Node.js (works with Node 20, 22, 23, or 24).",
+  "main": "server.js",
+  "type": "commonjs",
   "scripts": {
+    "start": "node server.js dialogue.db",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "dialogue",
+    "sqlite",
+    "explorer",
+    "nodejs",
+    "game-tools"
+  ],
+  "author": "Your Name",
   "license": "ISC",
-  "type": "commonjs",
   "dependencies": {
     "better-sqlite3": "^12.4.1",
     "express": "^5.1.0"
+  },
+  "engines": {
+    "node": "20.x || 22.x || 23.x || 24.x"
   }
 }
