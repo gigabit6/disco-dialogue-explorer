@@ -1,4 +1,4 @@
-# 🗣️ FAYDE Dialogue Explorer (Node + SQLite)
+# 🗣️ Disco Dialogue Explorer (Node + SQLite)
 
 A complete re-implementation of the classic Ruby/Tk dialogue explorer in **Node.js**.  
 It allows you to explore and search a game’s dialogue stored in a SQLite database — all through a modern browser interface.
@@ -56,7 +56,7 @@ Download Final Cut version
 Once downloaded, place the file into the project root folder:
 
 ```
-fayde-dialogue-explorer/
+disco-dialogue-explorer/
 ├─ server.js
 ├─ dialogueExplorer.js
 ├─ package.json
@@ -74,8 +74,8 @@ You can name it anything you like — just reference it when starting the server
 ### 1️⃣ Clone the repository
 
 ```bash
-git clone https://github.com/your-username/fayde-dialogue-explorer.git
-cd fayde-dialogue-explorer
+git clone https://github.com/your-username/disco-dialogue-explorer.git
+cd disco-dialogue-explorer
 ```
 
 ### 2️⃣ Install dependencies
@@ -117,13 +117,13 @@ Then open your browser and visit:
 
 #### PowerShell
 ```powershell
-cd "C:\path\to\fayde-dialogue-explorer"
+cd "C:\path\to\disco-dialogue-explorer"
 node server.js dialogue.db
 ```
 
 #### Command Prompt
 ```bat
-cd C:\path\to\fayde-dialogue-explorer
+cd C:\path\to\disco-dialogue-explorer
 node server.js dialogue.db
 ```
 
@@ -132,7 +132,7 @@ node server.js dialogue.db
 ### 💻 On macOS / Linux
 
 ```bash
-cd /path/to/fayde-dialogue-explorer
+cd /path/to/disco-dialogue-explorer
 node server.js dialogue.db
 ```
 
@@ -231,7 +231,7 @@ Output appears in a large text area — copy/paste to another file.
 ## 🗂️ Project Structure
 
 ```
-fayde-dialogue-explorer/
+disco-dialogue-explorer/
 ├─ server.js              # Express backend + routes
 ├─ dialogueExplorer.js    # Core dialogue model and DB logic
 ├─ package.json           # Dependencies
@@ -263,8 +263,8 @@ fayde-dialogue-explorer/
 ## 🧪 Example Full Workflow
 
 ```bash
-git clone https://github.com/your-username/fayde-dialogue-explorer.git
-cd fayde-dialogue-explorer
+git clone https://github.com/your-username/disco-dialogue-explorer.git
+cd disco-dialogue-explorer
 npm install
 # Download and place dialogue.db here
 node server.js dialogue.db
