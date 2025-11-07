@@ -1,20 +1,9 @@
-# 🪩 Disco Dialogue Explorer (Node + SQLite)
+# 🪩 Off-Air Fayde (Disco Dialogue Explorer)
 
 A complete re-implementation of the Fayde Ruby/Tk dialogue explorer in **Node.js**.  
-It allows you to explore and search dialogue stored in a SQLite database
+It allows you to explore dialogue trees and branches similarly to Fayde's on-air version.
 
----
-
-## Features
-
-- Search dialogue lines by **text**, **actor name**, or **variable**
-- Browse **forward/backward** through dialogue links
-- Dump **entire conversations** or **actor lines**
-- No native dependencies — works everywhere Node.js does
-- Simple web UI accessible at `http://localhost:3000`
-- Fast local database access using `better-sqlite3`
-
----
+The name off-air comes from radiocomputing in Elysium, where you cannot control it remotely, as it is ran on local devices.
 
 ## Requirements
 
