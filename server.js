@@ -1,44 +1,33 @@
 // server.js
-const express = require('express');
-const path = require('path');
-const { DialogueExplorer, db } = require('./dialogueExplorer');
+const express = require("express");
+const path = require("path");
+const fs = require("fs");
+const { execSync } = require("child_process");
 
-const explorer = new DialogueExplorer();
 const app = express();
 
-// Resolve actor input (either id or name) to an actor id from the DB
-function resolveActorId(actorInput) {
-    const input = String(actorInput || '').trim().toLowerCase();
-    if (!input) return 0;
 
-    // If it's numeric, just use it as an ID
-    const asNumber = parseInt(input, 10);
-    if (!Number.isNaN(asNumber)) return asNumber;
+const DB_PATH = process.argv[2] || process.env.DB_PATH || "test.db";
+const PUBLIC_DIR = path.join(__dirname, "public");
+const ACTORS_JSON_PATH = path.join(PUBLIC_DIR, "actors.json");
 
-    // 1) Exact match
-    let row = db.prepare(
-        "SELECT id FROM actors WHERE LOWER(name) = ? ORDER BY id LIMIT 1"
-    ).get(input);
-    if (row) return row.id;
+// Ensure public/ exists
+if (!fs.existsSync(PUBLIC_DIR)) fs.mkdirSync(PUBLIC_DIR, { recursive: true });
 
-    // 2) Starts with (prefix match)
-    row = db.prepare(
-        "SELECT id FROM actors WHERE LOWER(name) LIKE ? ORDER BY id LIMIT 1"
-    ).get(input + '%');
-    if (row) return row.id;
-
-    // 3) Anywhere in the name (substring)
-    row = db.prepare(
-        "SELECT id FROM actors WHERE LOWER(name) LIKE ? ORDER BY id LIMIT 1"
-    ).get('%' + input + '%');
-    if (row) return row.id;
-
-    // 0 = no limit
-    return 0;
+// --- 🧠 Auto-generate actors.json from the DB ---
+try {
+    console.log(`📦 Generating actors.json from "${DB_PATH}"...`);
+    execSync(`node exportActorsJson.js "${DB_PATH}" "${ACTORS_JSON_PATH}"`, {
+        stdio: "inherit",
+    });
+    console.log(`✅ actors.json generated successfully at ${ACTORS_JSON_PATH}`);
+} catch (err) {
+    console.error("❌ Failed to generate actors.json:", err);
 }
 
-app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+// --- 🌍 Serve static files ---
+app.use(express.static(PUBLIC_DIR));
+
 
 // Basic ping
 app.get('/api/status', (req, res) => {
@@ -47,12 +36,11 @@ app.get('/api/status', (req, res) => {
 
 // Search lines
 app.post('/api/search', (req, res) => {
-    const { query, actorName, actorId, style } = req.body || {};
+    const { query, actorId, style } = req.body || {};
     try {
-        const actorLimit = resolveActorId(actorName || actorId);
         const results = explorer.searchlines(
             query || '',
-            actorLimit,
+            actorId,
             style || 'all'
         );
         res.json({ results });
@@ -117,10 +105,9 @@ app.post('/api/dump-convo', (req, res) => {
 
 // Dump by actor id
 app.post('/api/dump-actor', (req, res) => {
-    const { actorName, actorId } = req.body || {};
+    const { actorId } = req.body || {};
     try {
-        const actorLimit = resolveActorId(actorName || actorId);
-        const text = explorer.actorDump(actorLimit, true, false, true);
+        const text = explorer.actorDump(actorId, true, false, true);
         res.json({ text });
     } catch (e) {
         res.status(500).json({ error: e.message });
@@ -134,4 +121,9 @@ app.listen(PORT, () => {
             process.argv[2] || 'test.db'
         }`
     );
+});
+
+
+app.get('/actors.json', (req, res) => {
+    res.sendFile(path.join(__dirname, 'actors.json'));
 });

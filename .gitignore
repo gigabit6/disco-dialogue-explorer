@@ -145,3 +145,5 @@ vite.config.ts.timestamp-*
 
 # DBs
 *.db
+
+public/actors.json
