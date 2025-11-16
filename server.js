@@ -4,18 +4,9 @@ const path = require("path");
 const fs = require("fs");
 const { execSync } = require("child_process");
 const { DialogueExplorer, db } = require('./dialogueExplorer');
-const basicAuth = require("express-basic-auth");
 
 const explorer = new DialogueExplorer();
 const app = express();
-
-app.use(
-    basicAuth({
-        users: { admin: process.env.APP_PASSWORD || "kineema" },
-        challenge: true,
-    })
-);
-
 
 const DB_PATH = process.argv[2] || process.env.DB_PATH || "test.db";
 const PUBLIC_DIR = path.join(__dirname, "public");
