@@ -3,9 +3,11 @@ const express = require("express");
 const path = require("path");
 const fs = require("fs");
 const { execSync } = require("child_process");
+const { DialogueExplorer, db } = require('./dialogueExplorer');
 
+
+const explorer = new DialogueExplorer();
 const app = express();
-
 
 const DB_PATH = process.argv[2] || process.env.DB_PATH || "test.db";
 const PUBLIC_DIR = path.join(__dirname, "public");
@@ -27,6 +29,8 @@ try {
 
 // --- 🌍 Serve static files ---
 app.use(express.static(PUBLIC_DIR));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 
 // Basic ping
