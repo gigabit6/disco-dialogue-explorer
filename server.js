@@ -131,6 +131,22 @@ app.get("/api/variables", (req, res) => {
     }
 });
 
+app.get('/api/actors', (req, res) => {
+    try {
+        const data = explorer.getActorNameAndId();
+
+        if (!data || data.length === 0) {
+            // Return an empty array is usually nicer for the frontend
+            return res.json([]);
+        }
+
+        res.json(data);
+    } catch (err) {
+        console.error('Error fetching actors:', err);
+        res.status(500).json({ error: 'Failed to fetch actors' });
+    }
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(
@@ -138,9 +154,4 @@ app.listen(PORT, () => {
             process.argv[2] || 'test.db'
         }`
     );
-});
-
-
-app.get('/actors.json', (req, res) => {
-    res.sendFile(path.join(__dirname, 'actors.json'));
 });

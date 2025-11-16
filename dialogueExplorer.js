@@ -656,6 +656,24 @@ class DialogueExplorer {
         return rows;
     }
 
+
+    getActorNameAndId(){
+
+        const ACTORS_QUERY = `
+            SELECT a.id        AS id,
+                   a.name      AS name,
+                   COUNT(d.id) AS line_count
+            FROM actors a
+                     LEFT JOIN dentries d ON d.actor = a.id
+            GROUP BY a.id, a.name
+            ORDER BY line_count DESC;
+        `;
+
+        const rows = db.prepare(ACTORS_QUERY).all();
+
+        return rows;
+    }
+
     conversationinfo() {
         let convoID;
         if (this.lineSelected()) {
