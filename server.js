@@ -2,29 +2,15 @@
 const express = require("express");
 const path = require("path");
 const fs = require("fs");
-const { execSync } = require("child_process");
 const { DialogueExplorer, db } = require('./dialogueExplorer');
 
 const explorer = new DialogueExplorer();
 const app = express();
 
-const DB_PATH = process.argv[2] || process.env.DB_PATH || "test.db";
 const PUBLIC_DIR = path.join(__dirname, "public");
-const ACTORS_JSON_PATH = path.join(PUBLIC_DIR, "actors.json");
 
 // Ensure public/ exists
 if (!fs.existsSync(PUBLIC_DIR)) fs.mkdirSync(PUBLIC_DIR, { recursive: true });
-
-// --- 🧠 Auto-generate actors.json from the DB ---
-try {
-    console.log(`📦 Generating actors.json from "${DB_PATH}"...`);
-    execSync(`node exportActorsJson.js "${DB_PATH}" "${ACTORS_JSON_PATH}"`, {
-        stdio: "inherit",
-    });
-    console.log(`✅ actors.json generated successfully at ${ACTORS_JSON_PATH}`);
-} catch (err) {
-    console.error("❌ Failed to generate actors.json:", err);
-}
 
 // --- 🌍 Serve static files ---
 app.use(express.static(PUBLIC_DIR));
