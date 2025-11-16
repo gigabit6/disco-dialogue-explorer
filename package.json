@@ -19,7 +19,8 @@
   "license": "MIT",
   "dependencies": {
     "better-sqlite3": "^12.4.1",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "express-basic-auth": "^1.2.1"
   },
   "engines": {
     "node": "20.x || 22.x || 23.x || 24.x"
