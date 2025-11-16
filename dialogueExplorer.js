@@ -286,30 +286,6 @@ class DialogueEntry {
         return s;
     }
 
-    myStory(long = true) {
-        let story =
-            this.actor === 0
-                ? 'this is a hub '
-                : `${this.actor} says ${this.dialoguetext} to ${this.conversant}`;
-
-        if (long) {
-            story +=
-                this.conditionstring && this.conditionstring.length > 1
-                    ? ` if ${this.conditionstring}`
-                    : ' unconditionally';
-            story +=
-                this.userscript && this.userscript.length > 1
-                    ? ` and causing ${this.userscript}`
-                    : ' with no action';
-            story +=
-                this.sequence && this.sequence.length > 1
-                    ? ` and showing ${this.sequence}`
-                    : ' normally';
-        }
-
-        return story;
-    }
-
     getConvoID() {
         return this.conversationid;
     }
@@ -347,10 +323,6 @@ class DialogueExplorer {
             arr = arr.filter((s) => !s.includes('HUB:'));
         }
         return arr.join('\n');
-    }
-
-    getCurrentLineStr(long = false) {
-        return this.nowLine ? this.nowLine.toString(long) : '';
     }
 
     // ---- Search ----
@@ -638,6 +610,50 @@ class DialogueExplorer {
             out += this.lineFromArray(row, long, markdown) + '\n';
         }
         return out;
+    }
+
+
+    variableSearch(q){
+        let rows;
+        if (!q) {
+            rows = db
+                .prepare(
+                    `
+          SELECT id, name, description
+          FROM variables
+          ORDER BY name COLLATE NOCASE
+          LIMIT 100
+        `
+                )
+                .all();
+            return rows;
+        }
+
+        // If numeric, allow exact ID search too
+        const asNumber = parseInt(q, 10);
+        const params = {
+            like: `%${q}%`,
+            id: Number.isNaN(asNumber) ? null : asNumber,
+        };
+
+        rows = db
+            .prepare(
+                `
+        SELECT id, name, description
+        FROM variables
+        WHERE
+          (LOWER(name) LIKE @like
+           OR LOWER(description) LIKE @like)
+          OR (@id IS NOT NULL AND id = @id)
+        ORDER BY
+          (LOWER(name) = @like) DESC,         -- exact name match first (rare)
+          name COLLATE NOCASE
+        LIMIT 200
+      `
+            )
+            .all(params);
+
+        return rows;
     }
 
     conversationinfo() {

@@ -118,6 +118,21 @@ app.post('/api/dump-actor', (req, res) => {
     }
 });
 
+
+app.get("/api/variables", (req, res) => {
+    try {
+        const raw = String(req.query.q || "").trim();
+        const q = raw.toLowerCase();
+
+        const data = explorer.variableSearch(q);
+
+        res.json(data);
+    } catch (err) {
+        console.error("Error in /api/variables:", err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(
