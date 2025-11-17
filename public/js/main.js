@@ -75,8 +75,107 @@
 });
 
     btnGoToBrowse.addEventListener('click', () => {
-    document.querySelector('.tab[data-tab="browse"]').click();
-});
+        document.querySelector('.tab[data-tab="browse"]').click();
+    });
+
+    // --- Checks ---
+    const checkSkill = document.getElementById('checkSkill');
+    const checkMinDiff = document.getElementById('checkMinDiff');
+    const checkMaxDiff = document.getElementById('checkMaxDiff');
+    const btnCheckSearch = document.getElementById('btnCheckSearch');
+    const checkResultsList = document.getElementById('checkResultsList');
+    const checkResultsCount = document.getElementById('checkResultsCount');
+    const checkCurrentLinePreview = document.getElementById('checkCurrentLinePreview');
+    const btnCheckGoToBrowse = document.getElementById('btnCheckGoToBrowse');
+
+    let lastCheckResults = [];
+
+    async function loadCheckMeta() {
+        try {
+            const res = await fetch('/api/checks-meta');
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            const meta = await res.json();
+
+            // Skills
+            checkSkill.innerHTML = '';
+            const anyOpt = document.createElement('option');
+            anyOpt.value = '';
+            anyOpt.textContent = '(any skill)';
+            checkSkill.appendChild(anyOpt);
+
+            (meta.skills || []).forEach((skill) => {
+                const opt = document.createElement('option');
+                opt.value = skill;
+                opt.textContent = skill;
+                checkSkill.appendChild(opt);
+            });
+
+            // Difficulty bounds
+            const min = meta.minDifficulty ?? 0;
+            const max = meta.maxDifficulty ?? 0;
+
+            checkMinDiff.min = min;
+            checkMinDiff.max = max;
+            checkMaxDiff.min = min;
+            checkMaxDiff.max = max;
+
+            checkMinDiff.value = min;
+            checkMaxDiff.value = max;
+        } catch (e) {
+            console.error('Failed to load check meta:', e);
+        }
+    }
+
+    btnCheckSearch.addEventListener('click', async () => {
+        checkResultsList.innerHTML = '';
+        checkResultsCount.textContent = 'Searching...';
+        checkCurrentLinePreview.value = '';
+        btnCheckGoToBrowse.disabled = true;
+
+        try {
+            const data = await postJSON('/api/search-checks', {
+                skill: checkSkill.value || null,
+                minDifficulty: checkMinDiff.value,
+                maxDifficulty: checkMaxDiff.value,
+            });
+
+            lastCheckResults = data.results || [];
+            checkResultsCount.textContent = `${lastCheckResults.length} result(s)`;
+
+            lastCheckResults.forEach((text, idx) => {
+                const li = document.createElement('li');
+                li.textContent = `${idx}: ${text}`;
+                li.dataset.index = idx;
+                checkResultsList.appendChild(li);
+            });
+        } catch (e) {
+            checkResultsCount.textContent = 'Error: ' + e.message;
+        }
+    });
+
+    checkResultsList.addEventListener('click', async (ev) => {
+        const li = ev.target.closest('li');
+        if (!li) return;
+        const index = parseInt(li.dataset.index, 10);
+
+        try {
+            const data = await postJSON('/api/select-check', { index });
+            checkCurrentLinePreview.value = data.convoText || '';
+            btnCheckGoToBrowse.disabled = false;
+
+            // Prime the Browse tab in exactly the same way as the search tab
+            updateBrowseUI(data);
+        } catch (e) {
+            checkCurrentLinePreview.value = 'Error: ' + e.message;
+        }
+    });
+
+    btnCheckGoToBrowse.addEventListener('click', () => {
+        document.querySelector('.tab[data-tab="browse"]').click();
+    });
+
+    // Load initial meta (skills + bounds) when the page starts
+    loadCheckMeta();
 
     // --- Browse ---
     const browseConvo = document.getElementById('browseConvo');

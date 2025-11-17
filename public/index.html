@@ -12,6 +12,7 @@
 <main>
     <div class="tabs">
         <div class="tab active" data-tab="search">Search</div>
+        <div class="tab" data-tab="checks">Checks</div>
         <div class="tab" data-tab="browse">Browse</div>
         <div class="tab" data-tab="dump">Dump</div>
         <div class="tab" data-tab="variables">Variables</div>
@@ -50,6 +51,35 @@
                 <div style="flex:1; border:1px solid #ddd;">
                     <textarea id="currentLinePreview" readonly></textarea>
                     <button id="btnGoToBrowse" disabled>Open in Browse tab</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Checks tab -->
+    <section id="tab-checks" class="tab-content">
+        <div class="panel">
+            <div class="row">
+                <label>Skill:
+                    <select id="checkSkill"></select>
+                </label>
+                <label>Min difficulty:
+                    <input id="checkMinDiff" type="number" style="width:6em;">
+                </label>
+                <label>Max difficulty:
+                    <input id="checkMaxDiff" type="number" style="width:6em;">
+                </label>
+                <button id="btnCheckSearch">Search checks</button>
+                <span id="checkResultsCount"></span>
+            </div>
+
+            <div style="display:flex; gap:8px; height:260px;">
+                <div style="flex:1; overflow:auto; border:1px solid #ddd;">
+                    <ul id="checkResultsList"></ul>
+                </div>
+                <div style="flex:1; border:1px solid #ddd;">
+                    <textarea id="checkCurrentLinePreview" readonly></textarea>
+                    <button id="btnCheckGoToBrowse" disabled>Open in Browse tab</button>
                 </div>
             </div>
         </div>
@@ -112,8 +142,8 @@
                     class="text-input"
                     placeholder="Search variables by name or description... (min 2 chars)"
             />
-            <button id="varSearchButton" class="btn">Search</button>
-            <button id="varSearchClear" class="btn secondary">Clear</button>
+            <button id="varSearchButton" >Search</button>
+            <button id="varSearchClear" >Clear</button>
         </div>
 
         <div id="varSearchInfo" class="info-text">

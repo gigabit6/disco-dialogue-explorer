@@ -57,6 +57,52 @@ app.post('/api/select-search', (req, res) => {
     }
 });
 
+// --- NEW: search checks ---
+app.post('/api/search-checks', (req, res) => {
+    const { skill, minDifficulty, maxDifficulty } = req.body || {};
+    try {
+        const results = explorer.searchChecks(
+            skill || null,
+            minDifficulty !== undefined ? minDifficulty : null,
+            maxDifficulty !== undefined ? maxDifficulty : null
+        );
+        res.json({ results });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// --- NEW: select a check result & prime browse ---
+app.post('/api/select-check', (req, res) => {
+    const { index } = req.body || {};
+    try {
+        const selected = explorer.selectCheckOption(parseInt(index, 10));
+        // same priming logic as select-search
+        explorer.traceBackOrForth(false);
+        explorer.traceBackOrForth(true);
+        res.json({
+            selectedLine: selected,
+            convoText: explorer.outputLineCollectionStr(true, false, true, true, true),
+            forwardOptions: explorer.getForwardOptStrs(true),
+            backwardOptions: explorer.getBackwardOptStrs(true),
+            conversationInfo: explorer.conversationinfo(),
+        });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// --- NEW: checks meta (skills + difficulty bounds) ---
+app.get('/api/checks-meta', (req, res) => {
+    try {
+        const meta = explorer.getCheckSearchMeta();
+        res.json(meta);
+    } catch (e) {
+        console.error('Error in /api/checks-meta:', e);
+        res.status(500).json({ error: e.message });
+    }
+});
+
 // Trace forward/back by picking an option index
 app.post('/api/trace', (req, res) => {
     const { direction, index } = req.body || {};

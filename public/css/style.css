@@ -116,30 +116,6 @@ li:hover {
     border: 1px solid #ccc;
     border-radius: 4px;
 }
-
-/* Buttons */
-.btn {
-    padding: 6px 12px;
-    font-size: 14px;
-    background: #2d7ff9;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.btn:hover {
-    background: #1d5ec9;
-}
-
-.btn.secondary {
-    background: #aaa;
-}
-
-.btn.secondary:hover {
-    background: #888;
-}
-
 /* Info text */
 .info-text {
     font-size: 14px;

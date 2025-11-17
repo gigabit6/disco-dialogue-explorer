@@ -298,6 +298,7 @@ class DialogueExplorer {
         this.forwOptions = [];
         this.backOptions = [];
         this.searchOptions = [];
+        this.checkSearchOptions = [];
         this.nowJob = '';
     }
 
@@ -334,6 +335,25 @@ class DialogueExplorer {
             const main =
                 e.text && e.text.length > 3 ? `${e.actor}: ${e.text}` : e.title || e.text || '';
             return prefix + main;
+        });
+    }
+
+    getCheckSearchOptStrs() {
+        if (!this.checkSearchOptions) return [];
+        return this.checkSearchOptions.map((row) => {
+            const color = row.isred > 0 ? 'RED' : 'WHITE';
+            const skill = row.skill || 'Unknown skill';
+            const diff =
+                row.difficulty !== undefined && row.difficulty !== null
+                    ? row.difficulty
+                    : '?';
+            const actor = row.actorName || row.actor || '';
+            let text = row.dialoguetext || row.text || '';
+
+            text = (text || '').replace(/\s+/g, ' ').trim();
+            if (text.length > 120) text = text.slice(0, 117) + '...';
+
+            return `[${skill} ${color} diff ${diff}] ${actor}: ${text}`;
         });
     }
 
@@ -430,8 +450,63 @@ class DialogueExplorer {
         return this.getSearchOptStrs();
     }
 
+    searchChecks(skill = null, minDifficulty = null, maxDifficulty = null) {
+        const where = [];
+        const params = {};
+
+        if (skill && skill !== 'any') {
+            where.push('c.skilltype = @skill');
+            params.skill = skill;
+        }
+
+        if (minDifficulty !== null && minDifficulty !== '' && !Number.isNaN(minDifficulty)) {
+            params.minDiff = parseInt(minDifficulty, 10);
+            where.push('c.difficulty >= @minDiff');
+        }
+
+        if (maxDifficulty !== null && maxDifficulty !== '' && !Number.isNaN(maxDifficulty)) {
+            params.maxDiff = parseInt(maxDifficulty, 10);
+            where.push('c.difficulty <= @maxDiff');
+        }
+
+        const sql = `
+            SELECT
+              d.conversationid AS convoId,
+              d.id             AS lineId,
+              a.name           AS actorName,
+              d.dialoguetext   AS dialoguetext,
+              c.skilltype      AS skill,
+              c.difficulty     AS difficulty,
+              c.flagname       AS flag,
+              c.isred          AS isred
+            FROM checks c
+            JOIN dentries d
+              ON d.conversationid = c.conversationid
+             AND d.id           = c.dialogueid
+            JOIN actors a
+              ON d.actor = a.id
+            ${where.length ? 'WHERE ' + where.join(' AND ') : ''}
+            ORDER BY
+              c.skilltype COLLATE NOCASE,
+              c.difficulty,
+              a.name COLLATE NOCASE
+        `;
+
+        const rows = db.prepare(sql).all(params);
+        this.checkSearchOptions = rows;
+        return this.getCheckSearchOptStrs();
+    }
+
     selectSearchOption(index) {
         const sel = this.searchOptions[index];
+        if (!sel) return null;
+        this.nowLine = new DialogueEntry(sel.convoId, sel.lineId);
+        this.lineCollection = [this.nowLine];
+        return this.nowLine.toString(true);
+    }
+
+    selectCheckOption(index) {
+        const sel = this.checkSearchOptions && this.checkSearchOptions[index];
         if (!sel) return null;
         this.nowLine = new DialogueEntry(sel.convoId, sel.lineId);
         this.lineCollection = [this.nowLine];
@@ -654,6 +729,40 @@ class DialogueExplorer {
             .all(params);
 
         return rows;
+    }
+
+    getCheckSearchMeta() {
+        const skillRows = db
+            .prepare(`
+                SELECT DISTINCT skilltype AS skill
+                FROM checks
+                WHERE skilltype IS NOT NULL
+                  AND TRIM(skilltype) <> ''
+                ORDER BY skill COLLATE NOCASE
+            `)
+            .all();
+
+        const bounds = db
+            .prepare(`
+                SELECT
+                  MIN(difficulty) AS minDifficulty,
+                  MAX(difficulty) AS maxDifficulty
+                FROM checks
+                WHERE difficulty IS NOT NULL
+            `)
+            .get();
+
+        return {
+            skills: skillRows.map((r) => r.skill),
+            minDifficulty:
+                bounds && bounds.minDifficulty !== null && bounds.minDifficulty !== undefined
+                    ? bounds.minDifficulty
+                    : 0,
+            maxDifficulty:
+                bounds && bounds.maxDifficulty !== null && bounds.maxDifficulty !== undefined
+                    ? bounds.maxDifficulty
+                    : 0,
+        };
     }
 
 
