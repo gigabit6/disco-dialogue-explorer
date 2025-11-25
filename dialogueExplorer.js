@@ -1,11 +1,23 @@
 // dialogueExplorer.js
 // Core logic ported from Ruby (no GUI)
+const fs = require('fs');
+const Database = require('better-sqlite3'); // or your sqlite lib
 
-const Database = require('better-sqlite3');
+// DB path comes from CLI or env
+const DB_PATH = process.argv[2] || process.env.DB_PATH;
 
-// DB path comes from CLI: node server.js <dbfile>
-const DB_PATH = process.argv[2] || process.env.DB_PATH || 'dialogue.db';
-const db = new Database(DB_PATH, { readonly: true });
+let db;
+
+if (!DB_PATH) {
+    console.warn('No DB_PATH provided, starting with in-memory DB');
+    db = new Database(':memory:');
+} else if (!fs.existsSync(DB_PATH)) {
+    console.warn(`DB file "${DB_PATH}" not found, starting with in-memory DB`);
+    db = new Database(':memory:');
+} else {
+    console.log(`Opening DB at ${DB_PATH} in readonly mode`);
+    db = new Database(DB_PATH, { readonly: true });
+}
 
 class DialogueEntry {
     constructor(convoID, lineID) {
