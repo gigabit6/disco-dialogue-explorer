@@ -4,7 +4,7 @@
 const Database = require('better-sqlite3');
 
 // DB path comes from CLI: node server.js <dbfile>
-const DB_PATH = process.argv[2] || process.env.DB_PATH || 'test.db';
+const DB_PATH = process.argv[2] || process.env.DB_PATH || 'dialogue.db';
 const db = new Database(DB_PATH, { readonly: true });
 
 class DialogueEntry {
