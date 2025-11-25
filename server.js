@@ -2,6 +2,7 @@
 const express = require("express");
 const path = require("path");
 const fs = require("fs");
+const multer = require('multer');
 const { DialogueExplorer, db } = require('./dialogueExplorer');
 
 const explorer = new DialogueExplorer();
@@ -20,6 +21,45 @@ app.use(express.urlencoded({ extended: true }));
 // Basic ping
 app.get('/api/status', (req, res) => {
     res.json({ ok: true });
+});
+
+
+const ADMIN_TOKEN = process.env.ADMIN_TOKEN;
+
+// simple middleware to protect admin routes
+function authenticateAdmin(req, res, next) {
+    const token = req.query.token || req.headers['x-admin-token'];
+    if (token !== ADMIN_TOKEN) {
+        return res.status(401).send('Unauthorized');
+    }
+    next();
+}
+
+const upload = multer({
+    dest: '/data',  // temp path for uploaded files, in the volume
+});
+
+// TEMPORARY: upload a new DB file
+app.post('/admin/upload-db', authenticateAdmin, upload.single('file'), (req, res) => {
+    const fs = require('fs');
+    const path = require('path');
+
+    if (!req.file) {
+        return res.status(400).send('No file uploaded');
+    }
+
+    const tempPath = req.file.path;
+    const finalPath = DB_PATH; // e.g. /data/dialogue.db
+
+    // move/overwrite into place
+    fs.rename(tempPath, finalPath, (err) => {
+        if (err) {
+            console.error('Error moving uploaded DB file:', err);
+            return res.status(500).send('Failed to store DB file');
+        }
+        console.log(`New DB uploaded to ${finalPath}`);
+        return res.send('DB uploaded successfully. Redeploy to reload DB.');
+    });
 });
 
 // Search lines
