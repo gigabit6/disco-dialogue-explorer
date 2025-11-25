@@ -48,7 +48,7 @@ app.post('/admin/upload-db', authenticateAdmin, upload.single('file'), (req, res
     }
 
     const tempPath = req.file.path;
-    const finalPath = DB_PATH; // e.g. /data/dialogue.db
+    const finalPath = process.env.DB_PATH; // e.g. /data/dialogue.db
 
     // move/overwrite into place
     fs.rename(tempPath, finalPath, (err) => {
