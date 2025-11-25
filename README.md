@@ -292,6 +292,7 @@ const dbPath = process.argv[2] || process.env.DB_PATH || "dialogue.db";
 - Search suggestions (actor autocomplete)
 - Electron desktop wrapper
 - Multi-database support (For  databases before TFC or Jamais Vu)
+- Graph Explorer
 
 ---
 
