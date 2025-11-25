@@ -35,9 +35,8 @@ function authenticateAdmin(req, res, next) {
     next();
 }
 
-const upload = multer({
-    dest: '/data',  // temp path for uploaded files, in the volume
-});
+const uploadDestination = process.env.DATA_PATH || path.join(__dirname, 'data');
+const upload = multer({ dest: uploadDestination });
 
 // TEMPORARY: upload a new DB file
 app.post('/admin/upload-db', authenticateAdmin, upload.single('file'), (req, res) => {
