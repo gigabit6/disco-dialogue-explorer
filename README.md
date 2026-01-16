@@ -23,7 +23,7 @@ Before running the project, make sure you have:
 
 2. **Git**
 
-   If you are well versed with git, we reccomend intallation, since you can pull any adittins without the need for redownloading.
+   If you are well versed with git, we reccomend its installation, since you can pull any adittions without the need for redownloading.
    
    [https://git-scm.com/](https://git-scm.com/)  
    Check installation:
