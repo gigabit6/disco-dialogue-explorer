@@ -1,172 +1,213 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8" />
-    <title>Dialogue Explorer (Node UI)</title>
-    <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-<header>
-    Disco Explorer (Node UI)
-</header>
-<main>
-    <div class="tabs">
-        <div class="tab active" data-tab="search">Search</div>
-        <div class="tab" data-tab="checks">Checks</div>
-        <div class="tab" data-tab="browse">Browse</div>
-        <div class="tab" data-tab="dump">Dump</div>
-        <div class="tab" data-tab="variables">Variables</div>
-    </div>
+	<head>
+		<meta charset="utf-8" />
+		<title>Dialogue Explorer (Node UI)</title>
+		<link rel="stylesheet" href="css/style.css" />
+	</head>
+	<body>
+		<header>Disco Explorer (Node UI)</header>
+		<main>
+			<div class="tabs">
+				<div class="tab active" data-tab="search">Search</div>
+				<div class="tab" data-tab="checks">Checks</div>
+				<div class="tab" data-tab="browse">Browse</div>
+				<div class="tab" data-tab="dump">Dump</div>
+				<div class="tab" data-tab="variables">Variables</div>
+			</div>
 
-    <!-- Search tab -->
-    <section id="tab-search" class="tab-content active">
-        <div class="panel">
-            <div class="row">
-                <label>Search text:
-                    <input id="searchText" type="text" size="40" />
-                </label>
-                <select id="searchActorName"></select>
-                <label>Style:
-                    <select id="searchStyle">
-                        <option value="all">all words</option>
-                        <option value="any">any word</option>
-                        <option value="phrase">exact phrase</option>
-                        <option value="variable">variable / condition</option>
-                    </select>
-                </label>
-                <button id="btnSearch">Search</button>
-            </div>
-            <div class="row">
-                <span class="label">Selected line:</span>
-                <span id="selectedLineText">(none)</span>
-            </div>
-            <div class="row">
-                <span class="label">Results:</span>
-                <span id="resultsCount"></span>
-            </div>
-            <div style="display:flex; gap:8px; height: 260px;">
-                <div style="flex:1; overflow:auto; border:1px solid #ddd;">
-                    <ul id="resultsList"></ul>
-                </div>
-                <div style="flex:1; border:1px solid #ddd;">
-                    <textarea id="currentLinePreview" readonly></textarea>
-                    <button id="btnGoToBrowse" disabled>Open in Browse tab</button>
-                </div>
-            </div>
-        </div>
-    </section>
+			<!-- Search tab -->
+			<section id="tab-search" class="tab-content active">
+				<div class="panel">
+					<div class="row">
+						<label
+							>Search text:
+							<input id="searchText" type="text" size="40" />
+						</label>
+						<select id="searchActorName"></select>
+						<label
+							>Style:
+							<select id="searchStyle">
+								<option value="all">all words</option>
+								<option value="any">any word</option>
+								<option value="phrase">exact phrase</option>
+								<option value="variable">
+									variable / condition
+								</option>
+							</select>
+						</label>
+						<button id="btnSearch">Search</button>
+					</div>
+					<div class="row">
+						<span class="label">Selected line:</span>
+						<span id="selectedLineText">(none)</span>
+					</div>
+					<div class="row">
+						<span class="label">Results:</span>
+						<span id="resultsCount"></span>
+					</div>
+					<div class="results-area" style="">
+						<div
+							style="
+								flex: 1;
+								overflow: auto;
+								border: 1px solid #ddd;
+							"
+						>
+							<ul id="resultsList"></ul>
+						</div>
+						<div style="flex: 1; border: 1px solid #ddd">
+							<textarea
+								id="currentLinePreview"
+								readonly
+							></textarea>
+							<button id="btnGoToBrowse" disabled>
+								Open in Browse tab
+							</button>
+						</div>
+					</div>
+				</div>
+			</section>
 
-    <!-- Checks tab -->
-    <section id="tab-checks" class="tab-content">
-        <div class="panel">
-            <div class="row">
-                <label>Skill:
-                    <select id="checkSkill"></select>
-                </label>
-                <label>Min difficulty:
-                    <input id="checkMinDiff" type="number" style="width:6em;">
-                </label>
-                <label>Max difficulty:
-                    <input id="checkMaxDiff" type="number" style="width:6em;">
-                </label>
-                <button id="btnCheckSearch">Search checks</button>
-                <span id="checkResultsCount"></span>
-            </div>
+			<!-- Checks tab -->
+			<section id="tab-checks" class="tab-content">
+				<div class="panel">
+					<div class="row">
+						<label
+							>Skill:
+							<select id="checkSkill"></select>
+						</label>
+						<label
+							>Min difficulty:
+							<input
+								id="checkMinDiff"
+								type="number"
+								style="width: 6em"
+							/>
+						</label>
+						<label
+							>Max difficulty:
+							<input
+								id="checkMaxDiff"
+								type="number"
+								style="width: 6em"
+							/>
+						</label>
+						<button id="btnCheckSearch">Search checks</button>
+						<span id="checkResultsCount"></span>
+					</div>
 
-            <div style="display:flex; gap:8px; height:260px;">
-                <div style="flex:1; overflow:auto; border:1px solid #ddd;">
-                    <ul id="checkResultsList"></ul>
-                </div>
-                <div style="flex:1; border:1px solid #ddd;">
-                    <textarea id="checkCurrentLinePreview" readonly></textarea>
-                    <button id="btnCheckGoToBrowse" disabled>Open in Browse tab</button>
-                </div>
-            </div>
-        </div>
-    </section>
+					<div style="display: flex; gap: 8px; height: 260px">
+						<div
+							style="
+								flex: 1;
+								overflow: auto;
+								border: 1px solid #ddd;
+							"
+						>
+							<ul id="checkResultsList"></ul>
+						</div>
+						<div style="flex: 1; border: 1px solid #ddd">
+							<textarea
+								id="checkCurrentLinePreview"
+								readonly
+							></textarea>
+							<button id="btnCheckGoToBrowse" disabled>
+								Open in Browse tab
+							</button>
+						</div>
+					</div>
+				</div>
+			</section>
 
-    <!-- Browse tab -->
-    <section id="tab-browse" class="tab-content">
-        <div class="panel">
-            <div class="row">
-                <span class="label">Conversation info:</span>
-                <span id="browseConversationInfo"></span>
-            </div>
-        </div>
-        <div class="panel">
-            <div class="label">Conversation:</div>
-            <textarea id="browseConvo" readonly></textarea>
-        </div>
-        <div class="panel">
-            <div class="row">
-                <div style="flex:1;">
-                    <div class="label">Backwards options (parents):</div>
-                    <ul id="backOptions"></ul>
-                </div>
-                <div style="flex:1;">
-                    <div class="label">Forward options (children):</div>
-                    <ul id="forwardOptions"></ul>
-                </div>
-            </div>
-        </div>
-    </section>
+			<!-- Browse tab -->
+			<section id="tab-browse" class="tab-content">
+				<div class="panel">
+					<div class="row">
+						<span class="label">Conversation info:</span>
+						<span id="browseConversationInfo"></span>
+					</div>
+				</div>
+				<div class="panel">
+					<div class="label">Conversation:</div>
+					<textarea id="browseConvo" readonly></textarea>
+				</div>
+				<div class="panel">
+					<div class="row">
+						<div style="flex: 1">
+							<div class="label">
+								Backwards options (parents):
+							</div>
+							<ul id="backOptions"></ul>
+						</div>
+						<div style="flex: 1">
+							<div class="label">Forward options (children):</div>
+							<ul id="forwardOptions"></ul>
+						</div>
+					</div>
+				</div>
+			</section>
 
-    <!-- Dump tab -->
-    <section id="tab-dump" class="tab-content">
-        <div class="panel">
-            <div class="row">
-                <button id="btnDumpConvo">Dump current conversation</button>
-                <label>Dump by actor name:
-                    <select id="dumpActorName"></select>
-                </label>
-                <button id="btnDumpActor">Dump actor</button>
-            </div>
-            <div class="row">
-                <span class="label">Conversation info:</span>
-                <span id="dumpConversationInfo"></span>
-            </div>
-        </div>
-        <div class="panel">
-            <textarea id="dumpText" readonly></textarea>
-        </div>
-    </section>
+			<!-- Dump tab -->
+			<section id="tab-dump" class="tab-content">
+				<div class="panel">
+					<div class="row">
+						<button id="btnDumpConvo">
+							Dump current conversation
+						</button>
+						<label
+							>Dump by actor name:
+							<select id="dumpActorName"></select>
+						</label>
+						<button id="btnDumpActor">Dump actor</button>
+					</div>
+					<div class="row">
+						<span class="label">Conversation info:</span>
+						<span id="dumpConversationInfo"></span>
+					</div>
+				</div>
+				<div class="panel">
+					<textarea id="dumpText" readonly></textarea>
+				</div>
+			</section>
 
-    <!-- Variables tab -->
-    <section id="tab-variables" class="tab-content">
-        <h2>Variables</h2>
+			<!-- Variables tab -->
+			<section id="tab-variables" class="tab-content">
+				<h2>Variables</h2>
 
-        <div class="var-search-row">
-            <input
-                    type="text"
-                    id="varSearchInput"
-                    class="text-input"
-                    placeholder="Search variables by name or description... (min 2 chars)"
-            />
-            <button id="varSearchButton" >Search</button>
-            <button id="varSearchClear" >Clear</button>
-        </div>
+				<div class="var-search-row">
+					<input
+						type="text"
+						id="varSearchInput"
+						class="text-input"
+						placeholder="Search variables by name or description... (min 2 chars)"
+					/>
+					<button id="varSearchButton">Search</button>
+					<button id="varSearchClear">Clear</button>
+				</div>
 
-        <div id="varSearchInfo" class="info-text">
-            Type at least 2 characters to search, or leave empty and click Search to list the first 100 variables.
-        </div>
+				<div id="varSearchInfo" class="info-text">
+					Type at least 2 characters to search, or leave empty and
+					click Search to list the first 100 variables.
+				</div>
 
-        <table id="varResultsTable" class="styled-table">
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Description</th>
-            </tr>
-            </thead>
-            <tbody id="varResultsBody">
-            <!-- results injected here -->
-            </tbody>
-        </table>
-    </section>
-</main>
+				<table id="varResultsTable" class="styled-table">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>Name</th>
+							<th>Description</th>
+						</tr>
+					</thead>
+					<tbody id="varResultsBody">
+						<!-- results injected here -->
+					</tbody>
+				</table>
+			</section>
+		</main>
 
-<script src="js/main.js"></script>
-<script src="js/actors.js"></script>
-<script src="js/variables.js"></script>
-</body>
+		<script src="js/main.js"></script>
+		<script src="js/actors.js"></script>
+		<script src="js/variables.js"></script>
+	</body>
 </html>
