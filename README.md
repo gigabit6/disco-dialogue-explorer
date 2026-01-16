@@ -316,7 +316,7 @@ You may use, modify, and distribute freely with attribution.
 
 ## Credits
 
-- Original Ruby/Tk app created by morgue-xiiv: we cannot thank them enough for their contribuitions to their fandom, their work is incredible and extremely helpful to all researchers of Elysium out there.
+- Original Ruby/Tk app created by morgue-xiiv: we cannot thank him enough for their contribuitions to their fandom, their work is incredible and extremely helpful to all researchers of Elysium out there.
 - Thanks to all testers and contributors!
 
 ---
