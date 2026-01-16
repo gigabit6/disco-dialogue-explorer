@@ -1,7 +1,7 @@
 # 🪩 Off-Air Fayde (Disco Dialogue Explorer)
 
 A complete re-implementation of the Fayde Ruby/Tk dialogue explorer in **Node.js**.  
-It allows you to explore dialogue trees and branches similarly to Fayde's on-air version.
+It allows you to explore dialogue trees and branches similarly to Fayde's on-air version, which you can visit in: https://fayde.co.uk/.
 
 The name off-air comes from radiocomputing in Elysium, where you cannot control it remotely, as it is ran on local devices.
 
@@ -9,26 +9,30 @@ The name off-air comes from radiocomputing in Elysium, where you cannot control 
 
 Before running the project, make sure you have:
 
-1. **Node.js 18+**  
+1. **Node.js 18+**
+
+   This is the javascript interpreter, it is necessary to run the server and database exploring logic.
+   
    [https://nodejs.org/](https://nodejs.org/)  
    Check installation:
    ```bash
    node -v
    npm -v
    ```
-*Note: The most recent version of Node, number 25 doesn't work with the current modules for reading Sqlite3, download the LTS (latest version) number 24.*
+*Note: The most recent version of Node, 25 doesn't work with the current modules for reading Sqlite3, download the LTS (latest version) number 24.*
 
-2. **Git**  
+2. **Git**
+
+   If you are well versed with git, we reccomend intallation, since you can pull any adittins without the need for redownloading.
+   
    [https://git-scm.com/](https://git-scm.com/)  
    Check installation:
    ```bash
    git --version
    ```
 
-3. A **dialogue database** (`.db` file) that contains the following tables (or equivalents):
-   ```
-   actors, dentries, dlinks, dialogues, alternates, checks, modifiers
-   ```
+4. A **dialogue database** (`.db` file) that contains the following tables (or equivalents):
+   
 
 ---
 
@@ -36,14 +40,13 @@ Before running the project, make sure you have:
 
 This repository does **not include** the dialogue database file.
 
-You must download it separately from your project’s storage or distribution source.
+You must download it separately from the original Fayde implementation, found here:
 
-> Example:  
 > [Download dialogue.db (Fayde Link)](https://fayde.seadragonlair.co.uk/)
 
 
 
-Once downloaded, place the file into the project root folder:
+Once downloaded, place the file into the project root folder, the same place with *server.js*:
 
 ```
 disco-dialogue-explorer/
@@ -55,33 +58,41 @@ disco-dialogue-explorer/
 └─ dialogue.db   ← your downloaded file
 ```
 
-You can name it anything you like — just reference it when starting the server.
+You can name it anything you like, just reference it when starting the server.
 
 ---
 
 ## Installation
 
-### 1️Clone the repository
+### 1️Clone or download the repository
 
 ```bash
 git clone https://github.com/your-username/disco-dialogue-explorer.git
 cd disco-dialogue-explorer
 ```
 
+or alternatively the Download zip file, once downloaded extract it then acess it.
+
 ### 2️Install dependencies
 
-```bash
+Once in the folder, enter the terminal, this part may seem a tad scary, but it is just a few simple commands. You will be installing a few depepndencies first, namely, Express, the database reader, and other ones needed for the code. To enter the terminal in Windows, you can click the file path, erase everything and type ``cmd``, if you see a black window and the file path to Fayde, you did it right!
+
+Once there, type:
+
+```cmd
 npm install
 ```
 
-That installs:
+That will install:
 - `express` – web server framework
 - `better-sqlite3` – local SQLite engine
-- `helmet`, `express-rate-limit` (optional security)
+- `helmet`, `express-rate-limit` (security)
 
 ---
 
 ## Running the App
+
+If everything isntalled correctly, the project is now runnable in your computer, we are at an early stage, so don't close that terminal just yet. The basic syntax of what you need to type is as follows
 
 ### Basic syntax
 ```bash
@@ -97,11 +108,12 @@ Expected output:
 ```
 Server running on http://localhost:3000 using DB at dialogue.db
 ```
-
-Then open your browser and visit:  
+If no error apeared, then open your browser and visit:  
 **http://localhost:3000**
 
 ---
+
+tl;dr for each operating system you might be in:
 
 ### On Windows
 
@@ -214,7 +226,7 @@ Exports dialogue text.
 - **Dump current conversation** → full conversation.
 - **Dump by actor name** → all lines by a specific actor.
 
-Output appears in a large text area — copy/paste to another file.
+Output appears in a large text area, copy/paste to another file.
 
 ---
 
@@ -241,11 +253,11 @@ disco-dialogue-explorer/
 
 ### “Port already in use”
 - Another app is using port 3000.
-- Run on another port:  
+- Either close whatever is running, or run it on another port:  
   `PORT=4000 node server.js dialogue.db`
 
 ### No results or crashes
-- Check your DB structure.
+- Check if it's actually the Fayde given database.
 - Tables must match those expected by the app.
 
 ---
@@ -290,7 +302,7 @@ const dbPath = process.argv[2] || process.env.DB_PATH || "dialogue.db";
 - Dark mode
 - Export as Markdown or JSON
 - Search suggestions (actor autocomplete)
-- Electron desktop wrapper
+- Electron desktop wrapper (and executable)
 - Graph Explorer
 
 ---
@@ -304,7 +316,7 @@ You may use, modify, and distribute freely with attribution.
 
 ## Credits
 
-- Original Ruby/Tk app created by morgue-xiiv — *FAYDE project*
+- Original Ruby/Tk app created by morgue-xiiv: we cannot thank them enough for their contribuitions to their fandom, their work is incredible and extremely helpful to all researchers of Elysium out there.
 - Thanks to all testers and contributors!
 
 ---
