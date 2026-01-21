@@ -3,16 +3,26 @@
 
 	--highlight-red: #a7361a;
 
-	--background-color: light-dark(#f4f4f4, #222);
-	--text-color: light-dark(#f4f4f4, #222);
-	--selected: light-dark(#fff, #000);
-	--info-text: light-dark(#555, #ccc);
-	--border-color: light-dark(#ddd, #444);
+	--background-color: #f4f4f4;
+	--text-color: #f4f4f4;
+	--selected: #fff;
+	--info-text: #555;
+	--border-color: #ddd;
 
 	--black: #000;
 	--base-black: #222;
 	--white: #fff;
 	--base-white: #f4f4f4;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--background-color: #222;
+		--text-color: #222;
+		--selected: #000;
+		--info-text: #ccc;
+		--border-color: #444;
+	}
 }
 
 * {
@@ -33,6 +43,10 @@ header {
 	color: var(--white);
 	padding: 8px 16px;
 	font-size: 14px;
+
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
 }
 
 main {
@@ -191,4 +205,10 @@ li:hover {
 
 .styled-table tr:hover {
 	background: var(--selected);
+}
+
+.switch {
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
